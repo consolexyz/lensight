@@ -1,8 +1,8 @@
-import { Login } from "@/components/login";
+import { PredictionFeed } from "@/components/prediction/prediction-feed";
 import { getLensClient } from "@/lib/lens/client";
 import { fetchAccount } from "@lens-protocol/client/actions";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 /**
  * Fetches authenticated user account if logged in
@@ -25,43 +25,23 @@ async function getAuthenticatedAccount() {
 export default async function Home() {
   const account = await getAuthenticatedAccount();
 
-  if (!account) {
-    return (
-      <div className="flex flex-col items-center justify-center">
-        <Card className="w-full max-w-md">
-          <CardHeader>
-            <CardTitle>Sign in with Lens</CardTitle>
-            <CardDescription>Connect your wallet to access your Lens profile</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Login />
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
   return (
-    <div className="flex flex-col items-center justify-center">
-      <Card className="w-full max-w-lg">
-        <CardHeader className="flex flex-row items-center gap-4">
-          <Avatar className="h-16 w-16">
-            <AvatarImage src={account.metadata?.picture} />
-            <AvatarFallback>{account.address.substring(0, 2).toUpperCase()}</AvatarFallback>
-          </Avatar>
-          <div>
-            <CardTitle className="text-xl">{account.metadata?.name}</CardTitle>
-            <CardDescription className="mt-1">
-              {account.address}
-            </CardDescription>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-muted-foreground">
-            Successfully authenticated with Lens Protocol
-          </p>
-        </CardContent>
-      </Card>
+    <div className="max-w-3xl mx-auto py-6">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">Your Prediction Feed</h1>
+        <Button asChild>
+          <Link href="/create">Create Prediction</Link>
+        </Button>
+      </div>
+
+      <div className="mb-6">
+        <p className="text-muted-foreground">
+          Discover predictions from the community or create your own. Vote on what you think will happen!
+        </p>
+      </div>
+
+      {/* Client component that fetches and displays predictions */}
+      <PredictionFeed />
     </div>
   );
 }

@@ -12,17 +12,21 @@ import { ThemeProvider } from "next-themes";
 const wagmiConfig = createConfig(
   getDefaultConfig({
     walletConnectProjectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || "",
-    chains: [chains.mainnet],
+    chains: [chains.testnet],
     transports: {
-      [chains.mainnet.id]: http(),
       [chains.testnet.id]: http(),
     },
+    enableFamily: false,
     appName: "Lens App",
     appDescription: "Future of decentralized social",
     appUrl: "https://totally.real.com",
     appIcon: "https://totally.real.com/logo.png",
+
   }),
 );
+
+// Import the PredictionProvider
+import { PredictionProvider } from "@/context/PredictionContext";
 
 export const Providers = ({ children }: { children: JSX.Element }) => {
   const queryClient = new QueryClient();
@@ -33,7 +37,11 @@ export const Providers = ({ children }: { children: JSX.Element }) => {
       <WagmiProvider config={wagmiConfig}>
         <QueryClientProvider client={queryClient}>
           <ConnectKitProvider>
-            <LensProvider client={publicClient}>{children}</LensProvider>
+            <LensProvider client={publicClient}>
+              <PredictionProvider>
+                {children}
+              </PredictionProvider>
+            </LensProvider>
           </ConnectKitProvider>
         </QueryClientProvider>
       </WagmiProvider>
