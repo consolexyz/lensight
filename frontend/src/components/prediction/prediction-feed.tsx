@@ -1,15 +1,14 @@
 "use client";
 
-import { Prediction } from "@/types/prediction";
+import { PredictionWithUser, PredictionCategory } from "@/lib/types";
 import { PredictionCard } from "./prediction-card";
-import { usePredictions } from "@/context/PredictionContext";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PredictionFilter } from "./prediction-filter";
-import { PredictionCategory } from "@/types/prediction";
+import { usePrediction } from "@/lib/contexts/PredictionContext";
 
 interface PredictionFeedProps {
-    initialPredictions?: Prediction[];
+    initialPredictions?: PredictionWithUser[];
     userAddress?: string;
     showFilters?: boolean;
     emptyMessage?: string;
@@ -21,40 +20,37 @@ export function PredictionFeed({
     showFilters = true,
     emptyMessage = "No predictions found"
 }: PredictionFeedProps) {
-    const { predictions: contextPredictions, loading, placeBet } = usePredictions();
-    const [filteredPredictions, setFilteredPredictions] = useState<Prediction[]>([]);
-    const [selectedCategory, setSelectedCategory] = useState<PredictionCategory | "all">("all");
-
-    const predictions = initialPredictions || contextPredictions;
+    const {
+        predictions,
+        isLoadingPredictions,
+        selectedCategory,
+        setSelectedCategory,
+        setUserAddress,
+        placeBet
+    } = usePrediction();
 
     useEffect(() => {
-        let filtered = [...predictions];
+        // If initialPredictions are provided, use those instead of fetching
+        if (initialPredictions) {
+            // We don't modify the context in this case
+            return;
+        }
 
-        // Filter by user if provided
+        // Update user address in context if provided as prop
         if (userAddress) {
-            filtered = filtered.filter(p => p.creator.address === userAddress);
+            setUserAddress(userAddress);
         }
 
-        // Filter by category if selected
-        if (selectedCategory !== "all") {
-            filtered = filtered.filter(p => p.category === selectedCategory);
-        }
-
-        // Sort by newest first
-        filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-
-        setFilteredPredictions(filtered);
-    }, [predictions, userAddress, selectedCategory]);
+        // The context will automatically fetch predictions when selectedCategory or userAddress change
+    }, [initialPredictions, userAddress, setUserAddress]);
 
     const handlePlaceBet = async (predictionId: string, amount: number, position: boolean) => {
-        try {
-            await placeBet(predictionId, amount, position);
-        } catch (error) {
-            console.error("Failed to place bet:", error);
-        }
+        // Use the placeBet function from context
+        await placeBet(predictionId, amount, position);
     };
 
-    if (loading) {
+    // Loading state with skeletons
+    if (isLoadingPredictions) {
         return (
             <div className="space-y-4 mt-6">
                 {Array.from({ length: 3 }).map((_, i) => (
@@ -73,6 +69,9 @@ export function PredictionFeed({
         );
     }
 
+    // Use either initialPredictions or predictions from context
+    const displayPredictions = initialPredictions || predictions;
+
     return (
         <div className="space-y-4">
             {showFilters && (
@@ -82,13 +81,13 @@ export function PredictionFeed({
                 />
             )}
 
-            {filteredPredictions.length === 0 ? (
+            {displayPredictions.length === 0 ? (
                 <div className="text-center py-8 text-muted-foreground">
                     {emptyMessage}
                 </div>
             ) : (
                 <div className="space-y-4">
-                    {filteredPredictions.map((prediction) => (
+                    {displayPredictions.map((prediction) => (
                         <PredictionCard
                             key={prediction.id}
                             prediction={prediction}

@@ -8,6 +8,7 @@ import { ConnectKitProvider, getDefaultConfig } from "connectkit";
 import { JSX } from "react";
 import { createConfig, http, WagmiProvider } from "wagmi";
 import { ThemeProvider } from "next-themes";
+import { PredictionProvider } from "@/lib/contexts/PredictionContext";
 
 const wagmiConfig = createConfig(
   getDefaultConfig({
@@ -25,8 +26,7 @@ const wagmiConfig = createConfig(
   }),
 );
 
-// Import the PredictionProvider
-import { PredictionProvider } from "@/context/PredictionContext";
+
 
 export const Providers = ({ children }: { children: JSX.Element }) => {
   const queryClient = new QueryClient();

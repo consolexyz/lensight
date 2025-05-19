@@ -28,6 +28,12 @@ export interface Prediction {
     bets: Bet[];
     totalBetsTrue: number;
     totalBetsFalse: number;
+    contractAddress?: string;
+    isPending?: boolean;
+    hasError?: boolean;
+    errorMessage?: string;
+    targetPrice?: string;
+    comparisonOperator?: string;
 }
 
 export interface Bet {
@@ -47,4 +53,6 @@ export interface CreatePredictionData {
     content: string;
     category: PredictionCategory;
     expiresAt: string;
+    targetPrice?: string;
+    comparisonOperator?: string;
 }

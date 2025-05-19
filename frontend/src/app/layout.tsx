@@ -4,6 +4,7 @@ import "../../public/globals.css";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Login } from "@/components/login";
 import { Toaster } from "@/components/ui/toaster";
+import { BackgroundSync } from "@/components/background-sync";
 import Link from "next/link";
 
 const geistSans = Geist({
@@ -25,9 +26,9 @@ export const metadata = {
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={"antialiased m-0 p-0 overflow-hidden"}>
+      <body className={"antialiased m-0 p-0 overflow-auto h-screen"}>
         <Providers>
-          <div className="min-h-screen flex flex-col">
+          <div className="min-h-screen flex flex-col h-full">
             <header className="fixed top-0 left-0 w-full bg-background/80 backdrop-blur-sm border-b z-10">
               <div className="container mx-auto flex justify-between items-center h-16 px-4">
                 <div className="flex items-center gap-6">
@@ -47,13 +48,14 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
               </div>
             </header>
 
-            <main className="flex-1 pt-16 bg-background">
-              <div className="container mx-auto px-4">
+            <main className="flex-1 pt-16 bg-background overflow-y-auto max-h-screen">
+              <div className="container mx-auto px-4 pb-8">
                 {children}
               </div>
             </main>
 
             <Toaster />
+            <BackgroundSync />
           </div>
         </Providers>
       </body>

@@ -1,0 +1,62 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum PredictionCategory {
+  CRYPTO
+  SPORTS
+  SOCIAL
+  OTHER
+}
+
+enum PredictionStatus {
+  OPEN
+  CLOSED
+  RESOLVED_TRUE
+  RESOLVED_FALSE
+}
+
+model Prediction {
+  id                 String             @id @default(uuid())
+  creatorAddress     String
+  creatorName        String?
+  creatorImage       String?
+  content            String
+  category           PredictionCategory
+  status             PredictionStatus   @default(OPEN)
+  createdAt          DateTime           @default(now())
+  expiresAt          DateTime
+  resolvedAt         DateTime?
+  contractAddress    String? // The address of the prediction contract on the blockchain
+  targetPrice        String? // For crypto predictions
+  comparisonOperator String? // For crypto predictions (>, <, =)
+  totalBetsTrue      Float              @default(0)
+  totalBetsFalse     Float              @default(0)
+  isPending          Boolean            @default(false)
+  hasError           Boolean            @default(false)
+  errorMessage       String?
+  bets               Bet[]
+}
+
+model Bet {
+  id              String     @id @default(uuid())
+  predictionId    String
+  prediction      Prediction @relation(fields: [predictionId], references: [id])
+  userAddress     String
+  userName        String?
+  userImage       String?
+  amount          Float
+  position        Boolean // true = YES, false = NO
+  createdAt       DateTime   @default(now())
+  transactionHash String? // The hash of the blockchain transaction
+}

@@ -1,15 +1,14 @@
 "use client";
 
-import { Prediction, PredictionStatus, Bet } from "@/types/prediction";
-import { usePredictions } from "@/context/PredictionContext";
+import { PredictionWithUser, PredictionStatus, BetWithUser } from "@/lib/types";
 import { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { formatDistanceToNow, format } from "date-fns";
-import { useToast } from "@/components/ui/use-toast";
 import { useAuthenticatedUser } from "@lens-protocol/react";
+import { usePrediction } from "@/lib/contexts/PredictionContext";
 import {
     Table,
     TableBody,
@@ -24,26 +23,23 @@ interface PredictionDetailProps {
 }
 
 export function PredictionDetail({ predictionId }: PredictionDetailProps) {
-    const { getPredictionById, placeBet } = usePredictions();
     const { data: authenticatedUser } = useAuthenticatedUser();
-    const { toast } = useToast();
-
-    const [prediction, setPrediction] = useState<Prediction | undefined>();
+    const { fetchPredictionById, selectedPrediction, isLoadingPrediction, placeBet, claimReward } = usePrediction();
     const [isPlacingBet, setIsPlacingBet] = useState(false);
+    const [isClaimingReward, setIsClaimingReward] = useState(false);
     const [betAmount, setBetAmount] = useState(10);
 
     useEffect(() => {
-        const fetchPrediction = () => {
-            const predictionData = getPredictionById(predictionId);
-            setPrediction(predictionData);
-        };
+        // Fetch prediction details from context
+        fetchPredictionById(predictionId);
+    }, [predictionId, fetchPredictionById]);
 
-        fetchPrediction();
-    }, [predictionId, getPredictionById]);
-
-    if (!prediction) {
-        return <div>Loading prediction...</div>;
+    if (isLoadingPrediction || !selectedPrediction) {
+        return <div>Loading prediction details...</div>;
     }
+
+    // Use selectedPrediction from context
+    const prediction = selectedPrediction;
 
     const totalBets = prediction.totalBetsTrue + prediction.totalBetsFalse;
     const truePercentage = totalBets > 0 ? Math.round((prediction.totalBetsTrue / totalBets) * 100) : 50;
@@ -53,35 +49,30 @@ export function PredictionDetail({ predictionId }: PredictionDetailProps) {
     const formattedExpiresAt = format(new Date(prediction.expiresAt), "PPP");
 
     const handlePlaceBet = async (position: boolean) => {
-        if (!authenticatedUser) {
-            toast({
-                title: "Authentication Required",
-                description: "Please connect your wallet to place a bet",
-                variant: "destructive",
-            });
-            return;
-        }
-
         try {
             setIsPlacingBet(true);
             await placeBet(predictionId, betAmount, position);
-            toast({
-                title: "Bet Placed",
-                description: `You bet ${betAmount} on ${position ? "YES" : "NO"}`,
-            });
         } catch (error) {
-            console.error("Error placing bet:", error);
-            toast({
-                title: "Error",
-                description: "Failed to place bet. Please try again.",
-                variant: "destructive",
-            });
+            console.error("Error in bet placement:", error);
         } finally {
             setIsPlacingBet(false);
         }
     };
 
-    const isPredictionClosed = prediction.status !== PredictionStatus.OPEN;
+    const handleClaimReward = async () => {
+        try {
+            setIsClaimingReward(true);
+            await claimReward(predictionId);
+        } catch (error) {
+            console.error("Error claiming reward:", error);
+        } finally {
+            setIsClaimingReward(false);
+        }
+    };
+
+    const isPredictionClosed = prediction.status !== "OPEN";
+    const isPredictionResolved = prediction.status === PredictionStatus.RESOLVED_TRUE ||
+        prediction.status === PredictionStatus.RESOLVED_FALSE;
 
     return (
         <div className="space-y-6">
@@ -116,20 +107,16 @@ export function PredictionDetail({ predictionId }: PredictionDetailProps) {
                     <div className="space-y-4">
                         <div>
                             <h3 className="text-sm font-medium mb-1">Current Prediction Results</h3>
-                            <div className="bg-muted rounded-md overflow-hidden">
-                                <div className="flex h-6">
-                                    <div
-                                        className="bg-green-500 h-full transition-all duration-300"
-                                        style={{ width: `${truePercentage}%` }}
-                                    />
-                                    <div
-                                        className="bg-red-500 h-full transition-all duration-300"
-                                        style={{ width: `${falsePercentage}%` }}
-                                    />
-                                </div>
-                                <div className="flex justify-between px-3 py-1 text-sm font-medium">
-                                    <span>YES: {truePercentage}% ({prediction.totalBetsTrue} tokens)</span>
-                                    <span>NO: {falsePercentage}% ({prediction.totalBetsFalse} tokens)</span>
+                            <div className="bg-muted rounded-md p-3">
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="text-sm bg-green-50 p-3 rounded-md border border-green-100">
+                                        <div className="font-semibold text-green-600 mb-1">YES</div>
+                                        <div>{prediction.bets.filter(bet => bet.position).length} bets</div>
+                                    </div>
+                                    <div className="text-sm bg-red-50 p-3 rounded-md border border-red-100">
+                                        <div className="font-semibold text-red-600 mb-1">NO</div>
+                                        <div>{prediction.bets.filter(bet => !bet.position).length} bets</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -161,34 +148,68 @@ export function PredictionDetail({ predictionId }: PredictionDetailProps) {
                     </div>
                 </CardContent>
 
+                {isPredictionResolved && authenticatedUser && (
+                    <CardFooter className="flex flex-col border-t pt-4">
+                        <div className="w-full text-center">
+                            <Button
+                                onClick={handleClaimReward}
+                                disabled={isClaimingReward}
+                                variant="default"
+                                className="bg-primary hover:bg-primary/90"
+                            >
+                                {isClaimingReward ? "Claiming..." : "Claim Your Reward"}
+                            </Button>
+                            <p className="text-xs text-muted-foreground mt-2">
+                                If you bet on the correct outcome, you can claim your winnings
+                            </p>
+                        </div>
+                    </CardFooter>
+                )}
+
                 {prediction.status === PredictionStatus.OPEN && (
                     <CardFooter className="flex flex-col border-t pt-4">
                         <h3 className="text-sm font-medium mb-3">Place Your Bet</h3>
 
-                        <div className="flex gap-2 w-full">
-                            <Input
-                                type="number"
-                                min="1"
-                                value={betAmount}
-                                onChange={(e) => setBetAmount(Math.max(1, parseInt(e.target.value)))}
-                                className="max-w-[100px]"
-                            />
-                            <Button
-                                variant="outline"
-                                className="w-1/2 bg-green-50 hover:bg-green-100 border-green-200"
-                                disabled={isPlacingBet}
-                                onClick={() => handlePlaceBet(true)}
-                            >
-                                Yes
-                            </Button>
-                            <Button
-                                variant="outline"
-                                className="w-1/2 bg-red-50 hover:bg-red-100 border-red-200"
-                                disabled={isPlacingBet}
-                                onClick={() => handlePlaceBet(false)}
-                            >
-                                No
-                            </Button>
+                        <div className="flex flex-col gap-2 w-full">
+                            <div className="flex items-center gap-2">
+                                <label className="text-sm text-muted-foreground">Amount (GRASS):</label>
+                                <Input
+                                    type="number"
+                                    step="any"
+                                    value={betAmount}
+                                    onChange={(e) => {
+                                        const value = parseFloat(e.target.value);
+                                        // Allow any positive number including decimals
+                                        if (!isNaN(value)) {
+                                            setBetAmount(value);
+                                        } else if (e.target.value === '') {
+                                            // Allow clearing the input
+                                            setBetAmount(0);
+                                        }
+                                    }}
+                                    className="max-w-[100px]"
+                                    placeholder="Amount"
+                                    aria-label="Bet amount in GRASS"
+                                />
+                            </div>
+                            <div className="flex gap-2">
+                                <Button
+                                    variant="outline"
+                                    className="w-1/2 bg-green-50 hover:bg-green-100 border-green-200"
+                                    disabled={isPlacingBet}
+                                    onClick={() => handlePlaceBet(true)}
+                                >
+                                    Yes ({betAmount} GRASS)
+                                </Button>
+                                <Button
+                                    variant="outline"
+                                    className="w-1/2 bg-red-50 hover:bg-red-100 border-red-200"
+                                    disabled={isPlacingBet}
+                                    onClick={() => handlePlaceBet(false)}
+                                >
+                                    No ({betAmount} GRASS)
+                                </Button>
+                            </div>
                         </div>
                     </CardFooter>
                 )}
@@ -218,13 +239,13 @@ export function PredictionDetail({ predictionId }: PredictionDetailProps) {
                                     <TableRow key={bet.id}>
                                         <TableCell className="flex items-center gap-2">
                                             <Avatar className="h-6 w-6">
-                                                <AvatarImage src={bet.user.profileImageUrl} />
+                                                <AvatarImage src={bet.user?.profileImageUrl || ''} />
                                                 <AvatarFallback>
-                                                    {bet.user.displayName?.substring(0, 2) || bet.user.address.substring(0, 2)}
+                                                    {bet.user?.displayName?.substring(0, 2) || bet.user?.address?.substring(0, 2) || 'XX'}
                                                 </AvatarFallback>
                                             </Avatar>
                                             <span className="text-sm">
-                                                {bet.user.displayName || bet.user.address.substring(0, 6) + "..."}
+                                                {bet.user?.displayName || (bet.user?.address && bet.user.address.substring(0, 6) + "...") || "Anonymous"}
                                             </span>
                                         </TableCell>
                                         <TableCell>

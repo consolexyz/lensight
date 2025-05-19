@@ -4,8 +4,17 @@ import { PredictionDetail } from "@/components/prediction/prediction-detail";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
+import { use } from "react";
 
-export default function PredictionPage({ params }: { params: { id: string } }) {
+interface PredictionPageProps {
+    params: { id: string } | Promise<{ id: string }>;
+}
+
+export default function PredictionPage({ params }: PredictionPageProps) {
+    // Properly unwrap the params object using React.use()
+    const resolvedParams = use(params);
+    const predictionId = resolvedParams.id;
+
     return (
         <div className="max-w-3xl mx-auto py-6">
             <div className="mb-6">
@@ -18,7 +27,7 @@ export default function PredictionPage({ params }: { params: { id: string } }) {
                 <h1 className="text-2xl font-bold">Prediction Details</h1>
             </div>
 
-            <PredictionDetail predictionId={params.id} />
+            <PredictionDetail predictionId={predictionId} />
         </div>
     );
 }

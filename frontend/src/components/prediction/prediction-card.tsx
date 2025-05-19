@@ -1,15 +1,16 @@
 "use client";
 
-import { Prediction, PredictionStatus } from "@/types/prediction";
+import { PredictionWithUser, PredictionStatus } from "@/lib/types";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { formatDistanceToNow } from "date-fns";
 import { useMemo, useState } from "react";
 import Link from "next/link";
 
 interface PredictionCardProps {
-    prediction: Prediction;
+    prediction: PredictionWithUser;
     onPlaceBet?: (predictionId: string, amount: number, position: boolean) => Promise<void>;
 }
 
@@ -50,7 +51,7 @@ export function PredictionCard({ prediction, onPlaceBet }: PredictionCardProps) 
                 <div className="flex items-start justify-between">
                     <div className="flex items-center gap-2">
                         <Avatar className="h-10 w-10">
-                            <AvatarImage src={prediction.creator.profileImageUrl} />
+                            <AvatarImage src={prediction.creator.profileImageUrl || undefined} />
                             <AvatarFallback>
                                 {prediction.creator.displayName?.substring(0, 2) || "U"}
                             </AvatarFallback>
@@ -78,20 +79,14 @@ export function PredictionCard({ prediction, onPlaceBet }: PredictionCardProps) 
                     <p className="text-base">{prediction.content}</p>
                 </Link>
 
-                <div className="mt-4 bg-muted rounded-md overflow-hidden">
-                    <div className="flex h-4">
-                        <div
-                            className="bg-green-500 h-full transition-all duration-300"
-                            style={{ width: `${truePercentage}%` }}
-                        />
-                        <div
-                            className="bg-red-500 h-full transition-all duration-300"
-                            style={{ width: `${falsePercentage}%` }}
-                        />
-                    </div>
-                    <div className="flex justify-between px-2 py-1 text-xs font-medium">
-                        <span>YES: {truePercentage}%</span>
-                        <span>NO: {falsePercentage}%</span>
+                <div className="mt-4 bg-muted rounded-md p-2">
+                    <div className="flex justify-between text-xs font-medium">
+                        <div>
+                            <span className="font-semibold text-green-600">YES:</span> {prediction.bets.filter(bet => bet.position).length} bets
+                        </div>
+                        <div>
+                            <span className="font-semibold text-red-600">NO:</span> {prediction.bets.filter(bet => !bet.position).length} bets
+                        </div>
                     </div>
                 </div>
 
@@ -109,7 +104,29 @@ export function PredictionCard({ prediction, onPlaceBet }: PredictionCardProps) 
             </CardContent>
 
             {prediction.status === PredictionStatus.OPEN && onPlaceBet && (
-                <CardFooter className="flex gap-2">
+                <CardFooter className="flex flex-col gap-2">
+                    <div className="flex items-center gap-2 mb-2">
+                        <label className="text-sm text-muted-foreground">Amount (GRASS):</label>
+                        <Input
+                            type="number"
+                            step="any"
+                            value={betAmount}
+                            onChange={(e) => {
+                                const value = parseFloat(e.target.value);
+                                // Allow any positive number including decimals
+                                if (!isNaN(value)) {
+                                    setBetAmount(value);
+                                } else if (e.target.value === '') {
+                                    // Allow clearing the input
+                                    setBetAmount(0);
+                                }
+                            }}
+                            className="max-w-[80px]"
+                            placeholder="Amount"
+                            aria-label="Bet amount in GRASS"
+                        />
+
+                    </div>
                     <div className="flex gap-2 w-full">
                         <Button
                             variant="outline"
@@ -117,7 +134,7 @@ export function PredictionCard({ prediction, onPlaceBet }: PredictionCardProps) 
                             disabled={isPlacingBet}
                             onClick={() => handlePlaceBet(true)}
                         >
-                            YES
+                            YES ({betAmount} GRASS)
                         </Button>
                         <Button
                             variant="outline"
@@ -125,7 +142,7 @@ export function PredictionCard({ prediction, onPlaceBet }: PredictionCardProps) 
                             disabled={isPlacingBet}
                             onClick={() => handlePlaceBet(false)}
                         >
-                            NO
+                            NO ({betAmount} GRASS)
                         </Button>
                     </div>
                 </CardFooter>

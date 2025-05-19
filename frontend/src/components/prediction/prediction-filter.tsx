@@ -1,6 +1,6 @@
 "use client";
 
-import { PredictionCategory } from "@/types/prediction";
+import { PredictionCategory } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 
 interface PredictionFilterProps {
