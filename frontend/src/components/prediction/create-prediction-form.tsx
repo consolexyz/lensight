@@ -48,7 +48,8 @@ export function CreatePredictionForm() {
     const [expiryHours, setExpiryHours] = useState<number>(24); // Default 24 hours
     const [selectedDate, setSelectedDate] = useState<Date | undefined>(addDays(new Date(), 7));
     const [targetPrice, setTargetPrice] = useState<string>("");
-    const [comparisonOperator, setComparisonOperator] = useState<string>(">");
+    const [comparisonOperator, setComparisonOperator] = useState<string>(">"); // Default to "Above"
+    const [tokenSymbol, setTokenSymbol] = useState<string>("BTC");
     const [walletError, setWalletError] = useState<string | null>(null);
 
     // No network switching functionality
@@ -231,6 +232,7 @@ export function CreatePredictionForm() {
                 contractAddress: marketAddress,
                 targetPrice: targetPrice || undefined,
                 comparisonOperator: comparisonOperator || undefined,
+                tokenSymbol: category === PredictionCategory.CRYPTO ? tokenSymbol : undefined,
             };
 
             const newPrediction = await createPrediction(predictionData);
@@ -335,8 +337,35 @@ export function CreatePredictionForm() {
                     {category === PredictionCategory.CRYPTO && (
                         <div className="space-y-4">
                             <div className="space-y-2">
+                                <label htmlFor="tokenSymbol" className="text-sm font-medium">
+                                    Select Token
+                                </label>
+                                <Select
+                                    value={tokenSymbol}
+                                    onValueChange={(value) => setTokenSymbol(value)}
+                                >
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select token" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="BTC">Bitcoin (BTC)</SelectItem>
+                                        <SelectItem value="ETH">Ethereum (ETH)</SelectItem>
+                                        <SelectItem value="SOL">Solana (SOL)</SelectItem>
+                                        <SelectItem value="AVAX">Avalanche (AVAX)</SelectItem>
+                                        <SelectItem value="MATIC">Polygon (MATIC)</SelectItem>
+                                        <SelectItem value="BNB">Binance Coin (BNB)</SelectItem>
+                                        <SelectItem value="ADA">Cardano (ADA)</SelectItem>
+                                        <SelectItem value="DOT">Polkadot (DOT)</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                <p className="text-xs text-muted-foreground">
+                                    Select the cryptocurrency you want to predict
+                                </p>
+                            </div>
+
+                            <div className="space-y-2">
                                 <label htmlFor="targetPrice" className="text-sm font-medium">
-                                    Target Price (in ETH)
+                                    Target Price (in USD)
                                 </label>
                                 <Input
                                     id="targetPrice"
@@ -362,15 +391,13 @@ export function CreatePredictionForm() {
                                         <SelectValue placeholder="Select comparison" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value=">">Greater than (&gt;)</SelectItem>
-                                        <SelectItem value="<">Less than (&lt;)</SelectItem>
-                                        <SelectItem value=">=">Greater than or equal to (&gt;=)</SelectItem>
-                                        <SelectItem value="<=">Less than or equal to (&lt;=)</SelectItem>
-                                        <SelectItem value="==">Equal to (==)</SelectItem>
+                                        <SelectItem value=">">Above</SelectItem>
+                                        <SelectItem value="<">Below</SelectItem>
+                                        <SelectItem value="==">Exactly</SelectItem>
                                     </SelectContent>
                                 </Select>
                                 <p className="text-xs text-muted-foreground">
-                                    How the price should be compared to your target
+                                    Will the price be above, below, or exactly your target?
                                 </p>
                             </div>
                         </div>

@@ -40,6 +40,7 @@ model Prediction {
   contractAddress String?           // The address of the prediction contract on the blockchain
   targetPrice     String?          // For crypto predictions
   comparisonOperator String?       // For crypto predictions (>, <, =)
+  tokenSymbol     String?          // Symbol of the token being predicted (BTC, ETH, SOL, etc.)
   totalBetsTrue   Float            @default(0)
   totalBetsFalse  Float            @default(0)
   isPending       Boolean          @default(false)

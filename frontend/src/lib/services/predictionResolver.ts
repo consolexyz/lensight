@@ -79,14 +79,12 @@ export class PredictionResolverService {
                 comparisonOperator: prediction.comparisonOperator || undefined,
                 outcome: false,
                 resolved: false
-            };
-
-            // Determine the outcome
+            };                // Determine the outcome
             if (prediction.targetPrice && prediction.comparisonOperator) {
                 // All predictions with target price and comparison operator are handled as price comparisons
                 try {
-                    // Extract the first word from content as symbol - we can improve this later
-                    const symbol = prediction.content.split(' ')[0];
+                    // Use tokenSymbol if available, otherwise fall back to extracting from content
+                    const symbol = prediction.tokenSymbol || prediction.content.split(' ')[0];
 
                     // Try to get the price based on the category
                     const actualPrice = await priceOracle.getPrice(

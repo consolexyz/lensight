@@ -134,6 +134,7 @@ exports.Prisma.PredictionScalarFieldEnum = {
   contractAddress: 'contractAddress',
   targetPrice: 'targetPrice',
   comparisonOperator: 'comparisonOperator',
+  tokenSymbol: 'tokenSymbol',
   totalBetsTrue: 'totalBetsTrue',
   totalBetsFalse: 'totalBetsFalse',
   isPending: 'isPending',

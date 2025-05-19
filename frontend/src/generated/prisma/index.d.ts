@@ -1059,6 +1059,7 @@ export namespace Prisma {
     contractAddress: string | null
     targetPrice: string | null
     comparisonOperator: string | null
+    tokenSymbol: string | null
     totalBetsTrue: number | null
     totalBetsFalse: number | null
     isPending: boolean | null
@@ -1080,6 +1081,7 @@ export namespace Prisma {
     contractAddress: string | null
     targetPrice: string | null
     comparisonOperator: string | null
+    tokenSymbol: string | null
     totalBetsTrue: number | null
     totalBetsFalse: number | null
     isPending: boolean | null
@@ -1101,6 +1103,7 @@ export namespace Prisma {
     contractAddress: number
     targetPrice: number
     comparisonOperator: number
+    tokenSymbol: number
     totalBetsTrue: number
     totalBetsFalse: number
     isPending: number
@@ -1134,6 +1137,7 @@ export namespace Prisma {
     contractAddress?: true
     targetPrice?: true
     comparisonOperator?: true
+    tokenSymbol?: true
     totalBetsTrue?: true
     totalBetsFalse?: true
     isPending?: true
@@ -1155,6 +1159,7 @@ export namespace Prisma {
     contractAddress?: true
     targetPrice?: true
     comparisonOperator?: true
+    tokenSymbol?: true
     totalBetsTrue?: true
     totalBetsFalse?: true
     isPending?: true
@@ -1176,6 +1181,7 @@ export namespace Prisma {
     contractAddress?: true
     targetPrice?: true
     comparisonOperator?: true
+    tokenSymbol?: true
     totalBetsTrue?: true
     totalBetsFalse?: true
     isPending?: true
@@ -1284,6 +1290,7 @@ export namespace Prisma {
     contractAddress: string | null
     targetPrice: string | null
     comparisonOperator: string | null
+    tokenSymbol: string | null
     totalBetsTrue: number
     totalBetsFalse: number
     isPending: boolean
@@ -1324,6 +1331,7 @@ export namespace Prisma {
     contractAddress?: boolean
     targetPrice?: boolean
     comparisonOperator?: boolean
+    tokenSymbol?: boolean
     totalBetsTrue?: boolean
     totalBetsFalse?: boolean
     isPending?: boolean
@@ -1347,6 +1355,7 @@ export namespace Prisma {
     contractAddress?: boolean
     targetPrice?: boolean
     comparisonOperator?: boolean
+    tokenSymbol?: boolean
     totalBetsTrue?: boolean
     totalBetsFalse?: boolean
     isPending?: boolean
@@ -1368,6 +1377,7 @@ export namespace Prisma {
     contractAddress?: boolean
     targetPrice?: boolean
     comparisonOperator?: boolean
+    tokenSymbol?: boolean
     totalBetsTrue?: boolean
     totalBetsFalse?: boolean
     isPending?: boolean
@@ -1389,6 +1399,7 @@ export namespace Prisma {
     contractAddress?: boolean
     targetPrice?: boolean
     comparisonOperator?: boolean
+    tokenSymbol?: boolean
     totalBetsTrue?: boolean
     totalBetsFalse?: boolean
     isPending?: boolean
@@ -1396,7 +1407,7 @@ export namespace Prisma {
     errorMessage?: boolean
   }
 
-  export type PredictionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "creatorAddress" | "creatorName" | "creatorImage" | "content" | "category" | "status" | "createdAt" | "expiresAt" | "resolvedAt" | "contractAddress" | "targetPrice" | "comparisonOperator" | "totalBetsTrue" | "totalBetsFalse" | "isPending" | "hasError" | "errorMessage", ExtArgs["result"]["prediction"]>
+  export type PredictionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "creatorAddress" | "creatorName" | "creatorImage" | "content" | "category" | "status" | "createdAt" | "expiresAt" | "resolvedAt" | "contractAddress" | "targetPrice" | "comparisonOperator" | "tokenSymbol" | "totalBetsTrue" | "totalBetsFalse" | "isPending" | "hasError" | "errorMessage", ExtArgs["result"]["prediction"]>
   export type PredictionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     bets?: boolean | Prediction$betsArgs<ExtArgs>
     _count?: boolean | PredictionCountOutputTypeDefaultArgs<ExtArgs>
@@ -1423,6 +1434,7 @@ export namespace Prisma {
       contractAddress: string | null
       targetPrice: string | null
       comparisonOperator: string | null
+      tokenSymbol: string | null
       totalBetsTrue: number
       totalBetsFalse: number
       isPending: boolean
@@ -1865,6 +1877,7 @@ export namespace Prisma {
     readonly contractAddress: FieldRef<"Prediction", 'String'>
     readonly targetPrice: FieldRef<"Prediction", 'String'>
     readonly comparisonOperator: FieldRef<"Prediction", 'String'>
+    readonly tokenSymbol: FieldRef<"Prediction", 'String'>
     readonly totalBetsTrue: FieldRef<"Prediction", 'Float'>
     readonly totalBetsFalse: FieldRef<"Prediction", 'Float'>
     readonly isPending: FieldRef<"Prediction", 'Boolean'>
@@ -3472,6 +3485,7 @@ export namespace Prisma {
     contractAddress: 'contractAddress',
     targetPrice: 'targetPrice',
     comparisonOperator: 'comparisonOperator',
+    tokenSymbol: 'tokenSymbol',
     totalBetsTrue: 'totalBetsTrue',
     totalBetsFalse: 'totalBetsFalse',
     isPending: 'isPending',
@@ -3637,6 +3651,7 @@ export namespace Prisma {
     contractAddress?: StringNullableFilter<"Prediction"> | string | null
     targetPrice?: StringNullableFilter<"Prediction"> | string | null
     comparisonOperator?: StringNullableFilter<"Prediction"> | string | null
+    tokenSymbol?: StringNullableFilter<"Prediction"> | string | null
     totalBetsTrue?: FloatFilter<"Prediction"> | number
     totalBetsFalse?: FloatFilter<"Prediction"> | number
     isPending?: BoolFilter<"Prediction"> | boolean
@@ -3659,6 +3674,7 @@ export namespace Prisma {
     contractAddress?: SortOrderInput | SortOrder
     targetPrice?: SortOrderInput | SortOrder
     comparisonOperator?: SortOrderInput | SortOrder
+    tokenSymbol?: SortOrderInput | SortOrder
     totalBetsTrue?: SortOrder
     totalBetsFalse?: SortOrder
     isPending?: SortOrder
@@ -3684,6 +3700,7 @@ export namespace Prisma {
     contractAddress?: StringNullableFilter<"Prediction"> | string | null
     targetPrice?: StringNullableFilter<"Prediction"> | string | null
     comparisonOperator?: StringNullableFilter<"Prediction"> | string | null
+    tokenSymbol?: StringNullableFilter<"Prediction"> | string | null
     totalBetsTrue?: FloatFilter<"Prediction"> | number
     totalBetsFalse?: FloatFilter<"Prediction"> | number
     isPending?: BoolFilter<"Prediction"> | boolean
@@ -3706,6 +3723,7 @@ export namespace Prisma {
     contractAddress?: SortOrderInput | SortOrder
     targetPrice?: SortOrderInput | SortOrder
     comparisonOperator?: SortOrderInput | SortOrder
+    tokenSymbol?: SortOrderInput | SortOrder
     totalBetsTrue?: SortOrder
     totalBetsFalse?: SortOrder
     isPending?: SortOrder
@@ -3735,6 +3753,7 @@ export namespace Prisma {
     contractAddress?: StringNullableWithAggregatesFilter<"Prediction"> | string | null
     targetPrice?: StringNullableWithAggregatesFilter<"Prediction"> | string | null
     comparisonOperator?: StringNullableWithAggregatesFilter<"Prediction"> | string | null
+    tokenSymbol?: StringNullableWithAggregatesFilter<"Prediction"> | string | null
     totalBetsTrue?: FloatWithAggregatesFilter<"Prediction"> | number
     totalBetsFalse?: FloatWithAggregatesFilter<"Prediction"> | number
     isPending?: BoolWithAggregatesFilter<"Prediction"> | boolean
@@ -3833,6 +3852,7 @@ export namespace Prisma {
     contractAddress?: string | null
     targetPrice?: string | null
     comparisonOperator?: string | null
+    tokenSymbol?: string | null
     totalBetsTrue?: number
     totalBetsFalse?: number
     isPending?: boolean
@@ -3855,6 +3875,7 @@ export namespace Prisma {
     contractAddress?: string | null
     targetPrice?: string | null
     comparisonOperator?: string | null
+    tokenSymbol?: string | null
     totalBetsTrue?: number
     totalBetsFalse?: number
     isPending?: boolean
@@ -3877,6 +3898,7 @@ export namespace Prisma {
     contractAddress?: NullableStringFieldUpdateOperationsInput | string | null
     targetPrice?: NullableStringFieldUpdateOperationsInput | string | null
     comparisonOperator?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenSymbol?: NullableStringFieldUpdateOperationsInput | string | null
     totalBetsTrue?: FloatFieldUpdateOperationsInput | number
     totalBetsFalse?: FloatFieldUpdateOperationsInput | number
     isPending?: BoolFieldUpdateOperationsInput | boolean
@@ -3899,6 +3921,7 @@ export namespace Prisma {
     contractAddress?: NullableStringFieldUpdateOperationsInput | string | null
     targetPrice?: NullableStringFieldUpdateOperationsInput | string | null
     comparisonOperator?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenSymbol?: NullableStringFieldUpdateOperationsInput | string | null
     totalBetsTrue?: FloatFieldUpdateOperationsInput | number
     totalBetsFalse?: FloatFieldUpdateOperationsInput | number
     isPending?: BoolFieldUpdateOperationsInput | boolean
@@ -3921,6 +3944,7 @@ export namespace Prisma {
     contractAddress?: string | null
     targetPrice?: string | null
     comparisonOperator?: string | null
+    tokenSymbol?: string | null
     totalBetsTrue?: number
     totalBetsFalse?: number
     isPending?: boolean
@@ -3942,6 +3966,7 @@ export namespace Prisma {
     contractAddress?: NullableStringFieldUpdateOperationsInput | string | null
     targetPrice?: NullableStringFieldUpdateOperationsInput | string | null
     comparisonOperator?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenSymbol?: NullableStringFieldUpdateOperationsInput | string | null
     totalBetsTrue?: FloatFieldUpdateOperationsInput | number
     totalBetsFalse?: FloatFieldUpdateOperationsInput | number
     isPending?: BoolFieldUpdateOperationsInput | boolean
@@ -3963,6 +3988,7 @@ export namespace Prisma {
     contractAddress?: NullableStringFieldUpdateOperationsInput | string | null
     targetPrice?: NullableStringFieldUpdateOperationsInput | string | null
     comparisonOperator?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenSymbol?: NullableStringFieldUpdateOperationsInput | string | null
     totalBetsTrue?: FloatFieldUpdateOperationsInput | number
     totalBetsFalse?: FloatFieldUpdateOperationsInput | number
     isPending?: BoolFieldUpdateOperationsInput | boolean
@@ -4164,6 +4190,7 @@ export namespace Prisma {
     contractAddress?: SortOrder
     targetPrice?: SortOrder
     comparisonOperator?: SortOrder
+    tokenSymbol?: SortOrder
     totalBetsTrue?: SortOrder
     totalBetsFalse?: SortOrder
     isPending?: SortOrder
@@ -4190,6 +4217,7 @@ export namespace Prisma {
     contractAddress?: SortOrder
     targetPrice?: SortOrder
     comparisonOperator?: SortOrder
+    tokenSymbol?: SortOrder
     totalBetsTrue?: SortOrder
     totalBetsFalse?: SortOrder
     isPending?: SortOrder
@@ -4211,6 +4239,7 @@ export namespace Prisma {
     contractAddress?: SortOrder
     targetPrice?: SortOrder
     comparisonOperator?: SortOrder
+    tokenSymbol?: SortOrder
     totalBetsTrue?: SortOrder
     totalBetsFalse?: SortOrder
     isPending?: SortOrder
@@ -4757,6 +4786,7 @@ export namespace Prisma {
     contractAddress?: string | null
     targetPrice?: string | null
     comparisonOperator?: string | null
+    tokenSymbol?: string | null
     totalBetsTrue?: number
     totalBetsFalse?: number
     isPending?: boolean
@@ -4778,6 +4808,7 @@ export namespace Prisma {
     contractAddress?: string | null
     targetPrice?: string | null
     comparisonOperator?: string | null
+    tokenSymbol?: string | null
     totalBetsTrue?: number
     totalBetsFalse?: number
     isPending?: boolean
@@ -4815,6 +4846,7 @@ export namespace Prisma {
     contractAddress?: NullableStringFieldUpdateOperationsInput | string | null
     targetPrice?: NullableStringFieldUpdateOperationsInput | string | null
     comparisonOperator?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenSymbol?: NullableStringFieldUpdateOperationsInput | string | null
     totalBetsTrue?: FloatFieldUpdateOperationsInput | number
     totalBetsFalse?: FloatFieldUpdateOperationsInput | number
     isPending?: BoolFieldUpdateOperationsInput | boolean
@@ -4836,6 +4868,7 @@ export namespace Prisma {
     contractAddress?: NullableStringFieldUpdateOperationsInput | string | null
     targetPrice?: NullableStringFieldUpdateOperationsInput | string | null
     comparisonOperator?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenSymbol?: NullableStringFieldUpdateOperationsInput | string | null
     totalBetsTrue?: FloatFieldUpdateOperationsInput | number
     totalBetsFalse?: FloatFieldUpdateOperationsInput | number
     isPending?: BoolFieldUpdateOperationsInput | boolean

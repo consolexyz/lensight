@@ -288,11 +288,9 @@ export function PredictionProvider({ children }: { children: ReactNode }) {
                         }),
                     });
 
-                    // Helper function to handle successful bet response
-                    const handleSuccessfulBet = async (response: Response, predictionId: string) => {
+                    // Helper function to handle successful bet with already parsed response data
+                    const handleSuccessfulBet = async (responseData: any, predictionId: string) => {
                         try {
-                            const responseData = await response.json();
-
                             // Check if the response contains prediction data
                             if (responseData.prediction) {
                                 const { prediction: updatedPrediction } = responseData;
@@ -318,8 +316,8 @@ export function PredictionProvider({ children }: { children: ReactNode }) {
                             });
 
                             return true;
-                        } catch (parseError) {
-                            console.error("Error parsing API response:", parseError);
+                        } catch (error) {
+                            console.error("Error handling bet response:", error);
                             await fetchPredictionById(predictionId);
 
                             toast({
@@ -333,7 +331,22 @@ export function PredictionProvider({ children }: { children: ReactNode }) {
 
                     // Check if we got any kind of response, even if not perfectly OK
                     if (response.status >= 200 && response.status < 500) {
-                        const responseData = await response.json();
+                        let responseData;
+                        try {
+                            responseData = await response.json();
+                        } catch (error) {
+                            console.error("Error parsing API response:", error);
+                            // If we can't parse the response, try to fetch the prediction directly
+                            await fetchPredictionById(predictionId);
+
+                            toast({
+                                title: "Bet Placed",
+                                description: `Your bet was placed successfully`,
+                            });
+
+                            success = true;
+                            return true;
+                        }
 
                         // Check if there's a warning but the prediction data was still returned
                         if (responseData.warning && responseData.prediction) {
@@ -358,7 +371,7 @@ export function PredictionProvider({ children }: { children: ReactNode }) {
                         // If we have a successful response with bet and prediction data
                         if (response.ok && responseData.bet && responseData.prediction) {
                             success = true;
-                            return await handleSuccessfulBet(response, predictionId);
+                            return await handleSuccessfulBet(responseData, predictionId);
                         }
 
                         // Handle error responses with useful data

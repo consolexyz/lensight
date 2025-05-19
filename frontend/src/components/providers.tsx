@@ -17,7 +17,7 @@ const wagmiConfig = createConfig(
     transports: {
       [chains.testnet.id]: http(),
     },
-    enableFamily: false,
+    enableFamily: true,
     appName: "Lens App",
     appDescription: "Future of decentralized social",
     appUrl: "https://totally.real.com",
@@ -36,12 +36,11 @@ export const Providers = ({ children }: { children: JSX.Element }) => {
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
       <WagmiProvider config={wagmiConfig}>
         <QueryClientProvider client={queryClient}>
-          <ConnectKitProvider>
-            <LensProvider client={publicClient}>
-              <PredictionProvider>
-                {children}
-              </PredictionProvider>
-            </LensProvider>
+          <ConnectKitProvider>            <LensProvider client={publicClient}>
+            <PredictionProvider>
+              {children}
+            </PredictionProvider>
+          </LensProvider>
           </ConnectKitProvider>
         </QueryClientProvider>
       </WagmiProvider>

@@ -34,6 +34,7 @@ export interface Prediction {
     errorMessage?: string;
     targetPrice?: string;
     comparisonOperator?: string;
+    tokenSymbol?: string;
 }
 
 export interface Bet {

@@ -130,7 +130,7 @@ export function PredictionCard({ prediction, onPlaceBet }: PredictionCardProps) 
                     <div className="flex gap-2 w-full">
                         <Button
                             variant="outline"
-                            className="w-1/2 bg-green-50 hover:bg-green-100 border-green-200"
+                            className="w-1/2 bg-gradient-to-br from-green-400 to-green-500 hover:from-green-500 hover:to-green-600 text-white border-green-600 shadow-sm hover:shadow-md transition-all font-medium"
                             disabled={isPlacingBet}
                             onClick={() => handlePlaceBet(true)}
                         >
@@ -138,7 +138,7 @@ export function PredictionCard({ prediction, onPlaceBet }: PredictionCardProps) 
                         </Button>
                         <Button
                             variant="outline"
-                            className="w-1/2 bg-red-50 hover:bg-red-100 border-red-200"
+                            className="w-1/2 bg-gradient-to-br from-red-400 to-red-500 hover:from-red-500 hover:to-red-600 text-white border-red-600 shadow-sm hover:shadow-md transition-all font-medium"
                             disabled={isPlacingBet}
                             onClick={() => handlePlaceBet(false)}
                         >

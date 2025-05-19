@@ -54,4 +54,5 @@ export interface CreatePredictionData {
     expiresAt: string;
     targetPrice?: string;
     comparisonOperator?: string;
+    tokenSymbol?: string;
 }
