@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { usePrediction } from "@/lib/contexts/PredictionContext";
 import { useState } from "react";
+import { LensAddressDisplay } from "@/components/lens/lens-address-display";
 
 interface BetCardProps {
     bet: {
@@ -51,12 +52,12 @@ export function BetCard({ bet }: BetCardProps) {
             case "RESOLVED_TRUE":
                 return {
                     text: bet.position ? "Won" : "Lost",
-                    variant: bet.position ? "success" : "destructive",
+                    variant: bet.position ? "outline" : "destructive",
                 };
             case "RESOLVED_FALSE":
                 return {
                     text: bet.position ? "Lost" : "Won",
-                    variant: bet.position ? "destructive" : "success",
+                    variant: bet.position ? "destructive" : "outline",
                 };
             case "CLOSED":
                 return { text: "Awaiting Results", variant: "warning" };
@@ -103,8 +104,8 @@ export function BetCard({ bet }: BetCardProps) {
                 <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
                         <Badge
-                            variant={bet.position ? "success" : "destructive"}
-                            className="bg-opacity-20"
+                            variant={bet.position ? "outline" : "destructive"}
+                            className={bet.position ? "border-green-500 text-green-600" : ""}
                         >
                             {bet.position ? "YES" : "NO"}
                         </Badge>
@@ -139,7 +140,10 @@ export function BetCard({ bet }: BetCardProps) {
                         </Avatar>
                         <span className="text-xs text-muted-foreground">
                             {bet.prediction.creator?.displayName ||
-                                (bet.prediction.creator?.address ? bet.prediction.creator.address.substring(0, 6) + '...' : 'Unknown')}
+                                (bet.prediction.creator?.address ?
+                                    <LensAddressDisplay address={bet.prediction.creator.address} fallbackLength={4} /> :
+                                    'Unknown'
+                                )}
                         </span>
                     </div>
                     <Link

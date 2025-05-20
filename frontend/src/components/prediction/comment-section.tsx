@@ -1,12 +1,12 @@
 import { useState, useMemo } from "react";
 import { CommentWithUser } from "@/lib/types";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { formatDistanceToNow } from "date-fns";
 import { MessageSquare, Send } from "lucide-react";
 import { useAuthenticatedUser } from "@lens-protocol/react";
 import { LensUsernameBadge } from "@/components/lens/username-badge";
+import { LensAddressDisplay } from "@/components/lens/lens-address-display";
 
 interface CommentSectionProps {
     predictionId: string;
@@ -58,7 +58,7 @@ export function CommentSection({
                     />
                     <div className="flex justify-between items-center w-full">                    <div className="text-xs text-muted-foreground">
                         {authenticatedUser?.address
-                            ? authenticatedUser.address.substring(0, 6) + "..." + authenticatedUser.address.substring(authenticatedUser.address.length - 4)
+                            ? <LensAddressDisplay address={authenticatedUser.address} className="text-xs" />
                             : "Connected"
                         }
                     </div>
@@ -97,15 +97,9 @@ export function CommentSection({
                         {comments.map((comment, index) => (
                             <div
                                 key={comment.id}
-                                className="flex gap-3 rounded-lg p-3 mb-3 bg-muted/50 hover:bg-muted/70 transition-colors"
+                                className="rounded-lg p-3 mb-3 bg-muted/50 hover:bg-muted/70 transition-colors"
                             >
-                                <Avatar className="h-8 w-8">
-                                    <AvatarImage src={comment.user.profileImageUrl || undefined} />
-                                    <AvatarFallback>
-                                        {comment.user.displayName?.substring(0, 2) || comment.user.address.substring(0, 2)}
-                                    </AvatarFallback>
-                                </Avatar>
-                                <div className="flex-1">
+                                <div>
                                     <div className="flex justify-between items-start">
                                         <div className="font-medium">
                                             {comment.user.displayName?.startsWith('@') ? (
@@ -114,9 +108,7 @@ export function CommentSection({
                                                     showFullHandle={true}
                                                 />
                                             ) : comment.user.displayName || (
-                                                <span title={comment.user.address}>
-                                                    {comment.user.address.substring(0, 6) + "..."}
-                                                </span>
+                                                <LensAddressDisplay address={comment.user.address} />
                                             )}
                                         </div>
                                         <div className="text-xs text-muted-foreground">

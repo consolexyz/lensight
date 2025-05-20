@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { formatDistanceToNow } from "date-fns";
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import { LensAddressDisplay } from "@/components/lens/lens-address-display";
 
 interface PredictionCardProps {
     prediction: PredictionWithUser;
@@ -58,7 +59,7 @@ export function PredictionCard({ prediction, onPlaceBet }: PredictionCardProps) 
                         </Avatar>
                         <div>
                             <div className="font-medium">
-                                {prediction.creator.displayName || prediction.creator.address.substring(0, 6) + "..."}
+                                {prediction.creator.displayName || <LensAddressDisplay address={prediction.creator.address} />}
                             </div>
                             <div className="text-xs text-muted-foreground flex gap-2">
                                 <span>{createdAt}</span>

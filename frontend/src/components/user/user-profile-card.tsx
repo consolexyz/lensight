@@ -5,6 +5,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { formatDistanceToNow } from "date-fns";
 import { LensUsernameBadge } from "@/components/lens/username-badge";
+import { LensAddressDisplay } from "@/components/lens/lens-address-display";
 
 interface UserProfileCardProps {
   address: string;
@@ -39,12 +40,18 @@ export function UserProfileCard({
 
           <div>
             <CardTitle className="text-xl md:text-2xl">
-              {displayName || address.substring(0, 6) + "..." + address.substring(address.length - 4)}
+              {displayName || <LensAddressDisplay address={address} fallbackLength={6} />}
             </CardTitle>
 
-            {username && (
+            {!displayName && username && (
               <div className="mt-1">
                 <LensUsernameBadge localName={username.replace('@', '').split('.')[0]} showFullHandle={true} />
+              </div>
+            )}
+
+            {!displayName && !username && (
+              <div className="mt-1">
+                <LensAddressDisplay address={address} className="text-sm" />
               </div>
             )}
 
