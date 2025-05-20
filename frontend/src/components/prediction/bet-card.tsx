@@ -109,7 +109,7 @@ export function BetCard({ bet }: BetCardProps) {
                         >
                             {bet.position ? "YES" : "NO"}
                         </Badge>
-                        <span className="font-medium">{bet.amount} GRASS</span>
+                        <span className="font-medium">{bet.amount} GHO</span>
                     </div>
                     <span className="text-sm text-muted-foreground">{createdAtRelative}</span>
                 </div>

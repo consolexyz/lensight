@@ -107,7 +107,7 @@ export function PredictionCard({ prediction, onPlaceBet }: PredictionCardProps) 
             {prediction.status === PredictionStatus.OPEN && onPlaceBet && (
                 <CardFooter className="flex flex-col gap-2">
                     <div className="flex items-center gap-2 mb-2">
-                        <label className="text-sm text-muted-foreground">Amount (GRASS):</label>
+                        <label className="text-sm text-muted-foreground">Amount (GHO):</label>
                         <Input
                             type="number"
                             step="any"
@@ -124,7 +124,7 @@ export function PredictionCard({ prediction, onPlaceBet }: PredictionCardProps) 
                             }}
                             className="max-w-[80px]"
                             placeholder="Amount"
-                            aria-label="Bet amount in GRASS"
+                            aria-label="Bet amount in GHO"
                         />
 
                     </div>
@@ -135,7 +135,7 @@ export function PredictionCard({ prediction, onPlaceBet }: PredictionCardProps) 
                             disabled={isPlacingBet}
                             onClick={() => handlePlaceBet(true)}
                         >
-                            YES ({betAmount} GRASS)
+                            YES ({betAmount} GHO)
                         </Button>
                         <Button
                             variant="outline"
@@ -143,7 +143,7 @@ export function PredictionCard({ prediction, onPlaceBet }: PredictionCardProps) 
                             disabled={isPlacingBet}
                             onClick={() => handlePlaceBet(false)}
                         >
-                            NO ({betAmount} GRASS)
+                            NO ({betAmount} GHO)
                         </Button>
                     </div>
                 </CardFooter>

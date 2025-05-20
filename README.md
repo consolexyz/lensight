@@ -9,7 +9,7 @@ Lensight is a decentralized prediction market platform integrated with Lens Prot
 **Lensight combines prediction markets with social identity:**
 
 - **Create Predictions**: Users can create predictions about future events across various categories
-- **Place Bets**: Bet on outcomes with your tokens ($GRASS)
+- **Place Bets**: Bet on outcomes with your tokens (GHO)
 - **Social Integration**: Full Lens Protocol integration showing usernames instead of addresses
 - **Win Rewards**: Claim rewards when predictions resolve in your favor
 - **Discover Trends**: Explore popular predictions and successful forecasters

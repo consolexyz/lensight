@@ -25,6 +25,12 @@ const config: HardhatUserConfig = {
                 "https://api-explorer-verify.staging.lens.zksync.dev/contract_verification",
             zksync: true,
         },
+        lensMainnet: {
+            chainId: 232,
+            url: "https://rpc.lens.xyz",
+            verifyURL: "https://explorer.lens.xyz/contract_verification",
+            zksync: true,
+        },
         hardhat: {
             zksync: true,
             loggingEnabled: true,

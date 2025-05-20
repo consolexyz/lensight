@@ -215,7 +215,7 @@ export function PredictionDetail({ predictionId }: PredictionDetailProps) {
 
                         <div className="flex flex-col gap-2 w-full">
                             <div className="flex items-center gap-2">
-                                <label className="text-sm text-muted-foreground">Amount (GRASS):</label>
+                                <label className="text-sm text-muted-foreground">Amount (GHO):</label>
                                 <Input
                                     type="number"
                                     step="any"
@@ -232,7 +232,7 @@ export function PredictionDetail({ predictionId }: PredictionDetailProps) {
                                     }}
                                     className="max-w-[100px]"
                                     placeholder="Amount"
-                                    aria-label="Bet amount in GRASS"
+                                    aria-label="Bet amount in GHO"
                                 />
                             </div>
                             <div className="flex gap-2">
@@ -242,7 +242,7 @@ export function PredictionDetail({ predictionId }: PredictionDetailProps) {
                                     disabled={isPlacingBet}
                                     onClick={() => handlePlaceBet(true)}
                                 >
-                                    {isPlacingBet ? "Placing Bet..." : `Yes (${betAmount} GRASS)`}
+                                    {isPlacingBet ? "Placing Bet..." : `Yes (${betAmount} GHO)`}
                                 </Button>
                                 <Button
                                     variant="outline"
@@ -250,7 +250,7 @@ export function PredictionDetail({ predictionId }: PredictionDetailProps) {
                                     disabled={isPlacingBet}
                                     onClick={() => handlePlaceBet(false)}
                                 >
-                                    {isPlacingBet ? "Placing Bet..." : `No (${betAmount} GRASS)`}
+                                    {isPlacingBet ? "Placing Bet..." : `No (${betAmount} GHO)`}
                                 </Button>
                             </div>
                         </div>
@@ -302,7 +302,7 @@ export function PredictionDetail({ predictionId }: PredictionDetailProps) {
                                                 {bet.position ? "YES" : "NO"}
                                             </span>
                                         </TableCell>
-                                        <TableCell>{bet.amount}</TableCell>
+                                        <TableCell>{bet.amount} GHO</TableCell>
                                         <TableCell>{format(new Date(bet.createdAt), "PP")}</TableCell>
                                     </TableRow>
                                 ))}
