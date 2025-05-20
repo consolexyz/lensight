@@ -1,6 +1,6 @@
 # Lensight ✨
 
-Lensight is a decentralized prediction market platform integrated with Lens Protocol. Users can create predictions, place bets, and earn rewards while engaging with a social layer that displays human-readable Lens usernames instead of complex wallet addresses.
+Lensight is a decentralized prediction market platform integrated with Lens Protocol. Users can create predictions, place bets, and earn rewards while engaging with a social layer.
 
 
 
@@ -22,7 +22,7 @@ Lensight is built as a hybrid Web3 application:
 2. **Frontend** (Next.js): Provides the user interface with Lens Protocol integration
 3. **Database** (Prisma): Stores prediction metadata, comments, and user profiles
 
-The platform leverages Lens Protocol V3 to associate wallet addresses with human-readable usernames, making the user experience more intuitive and friendly. When users connect their wallets, we fetch and display their Lens usernames using the Lens Protocol API.
+
 
 ### Prediction Market Smart Contracts
 
@@ -94,13 +94,15 @@ Ready to predict the future? Here's how to run Lensight locally:
    Edit `hardhat/.env` and add your deployer wallet's private key:
    ```sh
    PRIVATE_KEY=your_wallet_private_key
-   ALCHEMY_API_KEY=your_alchemy_api_key
    ```
 
    Deploy the contracts:
    ```sh
    # The deployment script will output the contract address
    # You can find it in hardhat/deploy/deploy-lens-mainnet.ts
+   
+   cd hardhat
+   npx hardhat deploy-zksync --network lensMainnet
    ```
 
    After deployment, save the PredictionMarketFactory contract address from the console output or deployment file. You'll need it for the frontend configuration.
