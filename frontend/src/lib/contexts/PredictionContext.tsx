@@ -250,7 +250,7 @@ export function PredictionProvider({ children }: { children: ReactNode }) {
 
             // Create wallet client
             const walletClient = viemModule.createWalletClient({
-                chain: chainsModule.lensChainTestnet,
+                chain: chainsModule.lensChainMainnet,
                 transport: viemModule.custom(window.ethereum)
             });
 
@@ -326,13 +326,13 @@ export function PredictionProvider({ children }: { children: ReactNode }) {
                             'Content-Type': 'application/json',
                         },
                         body: JSON.stringify({
-                            userAddress: address,
-                            amount,
-                            position,
+                            userAddress: address.toLowerCase(), // Normalize address
+                            amount: Number(amount), // Ensure amount is a number
+                            position: Boolean(position), // Ensure position is a boolean
                             transactionHash: hash,
                             // Include user display name and image if available from authenticated user
-                            userName: getUserName(authenticatedUser),
-                            userImage: getUserImage(authenticatedUser)
+                            userName: await getUserName(authenticatedUser),
+                            userImage: await getUserImage(authenticatedUser)
                         }),
                     });
 
@@ -508,7 +508,7 @@ export function PredictionProvider({ children }: { children: ReactNode }) {
 
             // Create wallet client
             const walletClient = viemModule.createWalletClient({
-                chain: chainsModule.lensChainTestnet,
+                chain: chainsModule.lensChainMainnet,
                 transport: viemModule.custom(window.ethereum)
             });
 

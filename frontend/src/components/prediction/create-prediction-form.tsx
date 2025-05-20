@@ -27,7 +27,7 @@ import {
 } from "@/components/ui/popover";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { parseEther, createPublicClient, http, createWalletClient, getContract, custom } from 'viem';
-import { lensChainTestnet } from "@/lib/contracts/chains";
+import { lensChainMainnet } from "@/lib/contracts/chains";
 import { v4 as uuid } from "uuid";
 import PredictionMarketFactoryContract from "@/lib/contracts/abis/PredictionMarketFactory.json";
 
@@ -51,8 +51,6 @@ export function CreatePredictionForm() {
     const [comparisonOperator, setComparisonOperator] = useState<string>(">"); // Default to "Above"
     const [tokenSymbol, setTokenSymbol] = useState<string>("BTC");
     const [walletError, setWalletError] = useState<string | null>(null);
-
-    // No network switching functionality
 
     // Function to update expiry date based on type and input
     const updateExpiryDate = () => {
@@ -146,19 +144,35 @@ export function CreatePredictionForm() {
                 return;
             }
 
+            // Check current network without switching
+            try {
+                const chainId = await window.ethereum.request({ method: 'eth_chainId' });
+                const currentChainId = parseInt(chainId as string, 16);
+                console.log(`Current wallet chain ID: ${currentChainId}`);
+                console.log(`Expected chain ID: ${lensChainMainnet.id}`);
+
+                if (currentChainId !== lensChainMainnet.id) {
+                    setWalletError(`Network mismatch! Your wallet is on network ${currentChainId}, but the app requires Lens Chain (${lensChainMainnet.id}). Please manually switch networks in your wallet.`);
+                    setTransactionState('error');
+                    return;
+                }
+            } catch (error) {
+                console.error("Error checking network:", error);
+            }
+
             // Convert expiresAt to Unix timestamp (seconds)
             const expiryTime = Math.floor(expiryDate.getTime() / 1000);
             const targetPriceValue = targetPrice ? parseEther(targetPrice).toString() : "0";
 
             // Create public client for reading from the blockchain
             const publicClient = createPublicClient({
-                chain: lensChainTestnet,
+                chain: lensChainMainnet,
                 transport: http()
             });
 
             // Using injected provider (MetaMask)
             const walletClient = createWalletClient({
-                chain: lensChainTestnet,
+                chain: lensChainMainnet,
                 transport: custom(window.ethereum)
             });
 

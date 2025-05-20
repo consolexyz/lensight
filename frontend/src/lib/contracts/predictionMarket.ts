@@ -7,7 +7,7 @@ import {
     decodeEventLog,
     custom
 } from 'viem';
-import { lensChainTestnet } from './chains';
+import { lensChainMainnet } from './chains';
 import type { Address } from 'viem';
 
 // Contract addresses
@@ -36,12 +36,12 @@ export async function createPredictionMarket(params: CreatePredictionParams): Pr
 
         // Create public client for reading from the blockchain
         const publicClient = createPublicClient({
-            chain: lensChainTestnet,
+            chain: lensChainMainnet,
             transport: http()
         });            // Check if we're on the right network
         const chainId = await window.ethereum.request({ method: 'eth_chainId' });
-        if (parseInt(chainId as string, 16) !== lensChainTestnet.id) {
-            console.warn(`Wrong network detected: ${chainId}, expected: ${lensChainTestnet.id}`);
+        if (parseInt(chainId as string, 16) !== lensChainMainnet.id) {
+            console.warn(`Wrong network detected: ${chainId}, expected: ${lensChainMainnet.id}`);
             // Get current network name if available
             let currentNetwork = "unknown network";
             try {
@@ -51,13 +51,13 @@ export async function createPredictionMarket(params: CreatePredictionParams): Pr
                 console.error("Failed to get network info:", e);
             }
 
-            throw new Error(`Please switch from ${currentNetwork} to the ${lensChainTestnet.name} network (Chain ID: ${lensChainTestnet.id})`);
+            throw new Error(`Please switch from ${currentNetwork} to the ${lensChainMainnet.name} network (Chain ID: ${lensChainMainnet.id})`);
         }
 
         // Create wallet client for writing to the blockchain
         // Using custom transport with window.ethereum
         const walletClient = createWalletClient({
-            chain: lensChainTestnet,
+            chain: lensChainMainnet,
             transport: custom(window.ethereum)
         });
 
@@ -80,7 +80,7 @@ export async function createPredictionMarket(params: CreatePredictionParams): Pr
             BigInt(params.targetPrice),
             params.comparisonOperator,
             params.category
-        ]); console.log("Transaction submitted with hash:", hash);
+        ], { account: address }); console.log("Transaction submitted with hash:", hash);
 
         // Wait for the transaction to be mined
         let receipt;

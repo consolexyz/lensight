@@ -6,7 +6,7 @@
  */
 
 import { ethers, ContractTransactionResponse } from 'ethers';
-import { lensChainTestnet } from "@/lib/contracts/chains";
+import { lensChainMainnet } from "@/lib/contracts/chains";
 import PredictionMarketABI from '@/lib/contracts/abis/PredictionMarket.json';
 
 export interface ContractDetails {
@@ -31,7 +31,7 @@ type PredictionMarketContract = ethers.Contract & {
     totalNoAmount(): Promise<bigint>;
     resolver(): Promise<string>;
     creator(): Promise<string>;
-    setResolver(address: string): Promise<ethers.ContractTransaction>;
+    setResolver(address: string): Promise<ContractTransactionResponse>;
 };
 
 export class ContractService {
@@ -40,7 +40,7 @@ export class ContractService {
 
     constructor() {
         // Use RPC URL from environment variable or default to public lens testnet endpoint
-        const rpcUrl = process.env.LENS_TESTNET_RPC_URL || lensChainTestnet.rpcUrls.default.http[0];
+        const rpcUrl = process.env.LENS_RPC_URL || lensChainMainnet.rpcUrls.default.http[0];
         try {
             this.provider = new ethers.JsonRpcProvider(rpcUrl);
 
@@ -49,7 +49,7 @@ export class ContractService {
         } catch (error) {
             console.error('Error initializing ethers provider:', error);
             // Fallback to a default provider as last resort
-            this.provider = ethers.getDefaultProvider(lensChainTestnet.id);
+            this.provider = ethers.getDefaultProvider(lensChainMainnet.id);
         }
     }
 
@@ -134,7 +134,7 @@ export class ContractService {
 
                 if (currentTime >= expiryTime) {
                     const closeTx = await connectedContract.closeMarket();
-                    await this.provider.waitForTransaction(closeTx.hash);
+                    await closeTx.wait();
                 } else {
                     throw new Error('Market is still open and not expired');
                 }
@@ -144,7 +144,7 @@ export class ContractService {
             const outcome = isTrue ? 1 : 2; // 1=YES, 2=NO
 
             const tx = await connectedContract.resolveMarket(outcome);
-            const receipt = await this.provider.waitForTransaction(tx.hash);
+            const receipt = await tx.wait();
 
             return tx.hash;
         } catch (error) {
@@ -238,9 +238,9 @@ export class ContractService {
 
             // Set the oracle as the resolver
             const tx = await connectedContract.setResolver(this.oracleAddress);
-            const receipt = await this.provider.waitForTransaction(tx);
+            const receipt = await tx.wait();
 
-            console.log(`Set oracle as resolver for contract ${contractAddress}, tx: ${tx}`);
+            console.log(`Set oracle as resolver for contract ${contractAddress}, tx: ${tx.hash}`);
             return tx.hash;
         } catch (error) {
             console.error('Error setting oracle as resolver:', error);

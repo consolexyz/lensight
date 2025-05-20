@@ -1,30 +1,30 @@
 import { defineChain } from 'viem';
 
 /**
- * Lens Chain testnet configuration for Viem
+ * Lens Chain configuration for Viem (Mainnet only)
  */
-export const lensChainTestnet = defineChain({
-    id: 37_111,
-    name: 'Lens Chain Testnet',
-    network: 'lenschain-testnet',
+export const lensChainMainnet = defineChain({
+    id: 232,
+    name: 'Lens Chain',
+    network: 'lenschain-mainnet',
     nativeCurrency: {
         decimals: 18,
-        name: 'GRASS',
-        symbol: 'GRASS',
+        name: 'GHO',
+        symbol: 'GHO',
     },
     rpcUrls: {
         default: {
-            http: ['https://api.staging.lens.zksync.dev'],
+            http: ['https://rpc.lens.xyz'],
         },
         public: {
-            http: ['https://api.staging.lens.zksync.dev'],
+            http: ['https://rpc.lens.xyz'],
         },
     },
     blockExplorers: {
         default: {
             name: 'Lens Chain Explorer',
-            url: 'https://sepolia.explorer.staging.lens.zksync.dev',
+            url: 'https://explorer.lens.xyz',
         },
     },
-    testnet: true,
+    testnet: false,
 });

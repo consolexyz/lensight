@@ -60,7 +60,8 @@ export function transformPrediction(prediction: PrismaPrediction): PredictionWit
             address: prediction.creatorAddress,
             displayName: prediction.creatorName,
             profileImageUrl: prediction.creatorImage,
-        }
+        },
+        bets: [] // Initialize empty bets array
     };
 }
 

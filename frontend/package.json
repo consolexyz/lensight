@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^5.0.1",
-    "@lens-chain/sdk": "canary",
+    "@lens-chain/sdk": "^1.0.3",
     "@lens-protocol/client": "canary",
     "@lens-protocol/react": "canary",
     "@prisma/client": "^6.8.2",
