@@ -36,7 +36,13 @@ interface PredictionContextType {
     claimReward: (predictionId: string) => Promise<boolean>;
     setSelectedCategory: (category: PredictionCategory | "all") => void;
     setUserAddress: (address: string | null) => void;
-    syncPendingBets: () => Promise<void>; // New method for manual sync
+    syncPendingBets: () => Promise<void>; // Method for manual sync
+
+    // Social interaction methods
+    addComment: (predictionId: string, content: string) => Promise<boolean>;
+    fetchComments: (predictionId: string) => Promise<void>;
+    toggleLike: (predictionId: string) => Promise<boolean>;
+    isLikedByCurrentUser: (predictionId: string) => boolean;
 }
 
 // Create context
@@ -45,6 +51,48 @@ const PredictionContext = createContext<PredictionContextType | undefined>(undef
 export function PredictionProvider({ children }: { children: ReactNode }) {
     const { toast } = useToast();
     const { data: authenticatedUser } = useAuthenticatedUser();
+
+    // Helper functions to safely extract user information
+    const getUserName = useCallback(async (user: any) => {
+        if (!user) return undefined;
+
+        // First try all possible paths where name could be stored
+        if (user.handle?.fullHandle) return user.handle.fullHandle;
+        if (user.displayName) return user.displayName;
+        if (typeof user.username === 'string') return user.username;
+        if (user.username?.localName) {
+            // We have a localName, try to get the full handle using our new function
+            try {
+                const { fetchLensUsername } = await import('@/lib/lens/client');
+                const usernameResult = await fetchLensUsername(user.username.localName);
+
+                if (!usernameResult.isErr() && usernameResult.value) {
+                    // Get username data from the result
+                    return `@${user.username.localName}.lens`;
+                }
+            } catch (error) {
+                console.error('Error fetching lens username:', error);
+                // Fall back to just using the localName
+                return user.username.localName;
+            }
+        }
+        if (user.handle) return user.handle;
+        if (user.name) return user.name;
+
+        return undefined;
+    }, []);
+
+    const getUserImage = useCallback((user: any) => {
+        if (!user) return undefined;
+
+        // Try all possible paths where profile image could be stored
+        if (user.picture?.original?.url) return user.picture.original.url;
+        if (user.profilePictureUrl) return user.profilePictureUrl;
+        if (user.metadata?.picture) return user.metadata.picture;
+        if (user.picture) return user.picture;
+
+        return undefined;
+    }, []);
 
     // States
     const [predictions, setPredictions] = useState<PredictionWithUser[]>([]);
@@ -283,8 +331,8 @@ export function PredictionProvider({ children }: { children: ReactNode }) {
                             position,
                             transactionHash: hash,
                             // Include user display name and image if available from authenticated user
-                            userName: authenticatedUser?.displayName || undefined,
-                            userImage: authenticatedUser?.profilePictureUrl || undefined
+                            userName: getUserName(authenticatedUser),
+                            userImage: getUserImage(authenticatedUser)
                         }),
                     });
 
@@ -354,7 +402,7 @@ export function PredictionProvider({ children }: { children: ReactNode }) {
                             toast({
                                 title: "Transaction Successful",
                                 description: responseData.warning,
-                                variant: "warning",
+                                variant: "destructive",
                             });
 
                             // Update the UI with what we got
@@ -395,7 +443,7 @@ export function PredictionProvider({ children }: { children: ReactNode }) {
                         toast({
                             title: "Transaction Successful",
                             description: "Your bet was placed on the blockchain but we had trouble updating our database. The data will sync shortly.",
-                            variant: "warning",
+                            variant: "destructive",
                         });
 
                         // Try one last time to fetch the prediction to update the UI
@@ -427,7 +475,7 @@ export function PredictionProvider({ children }: { children: ReactNode }) {
 
             return false;
         }
-    }, [authenticatedUser, selectedPrediction, fetchPredictionById, toast]);
+    }, [authenticatedUser, selectedPrediction, fetchPredictionById, toast, getUserName, getUserImage]);
 
     // Update predictions when filters change
     useEffect(() => {
@@ -543,7 +591,44 @@ export function PredictionProvider({ children }: { children: ReactNode }) {
                 variant: "destructive",
             });
         }
-    }, [toast, authenticatedUser?.address]);
+    }, [toast, authenticatedUser?.address]);    // Define fetchComments before using it in useEffect
+    const fetchComments = useCallback(async (predictionId: string): Promise<void> => {
+        try {
+            const response = await fetch(`/api/predictions/${predictionId}/comments`);
+
+            if (!response.ok) {
+                throw new Error(`Failed to fetch comments: ${response.statusText}`);
+            }
+
+            const data = await response.json();
+
+            if (data.success && data.comments) {
+                // Update the selected prediction with comments
+                setSelectedPrediction(prev => {
+                    if (prev && prev.id === predictionId) {
+                        return {
+                            ...prev,
+                            comments: data.comments.map((c: any) => ({
+                                id: c.id,
+                                predictionId: c.predictionId,
+                                content: c.content,
+                                createdAt: c.createdAt,
+                                lensPublicationId: c.lensPublicationId,
+                                user: {
+                                    address: c.userAddress,
+                                    displayName: c.userName,
+                                    profileImageUrl: c.userImage,
+                                }
+                            }))
+                        };
+                    }
+                    return prev;
+                });
+            }
+        } catch (error) {
+            console.error('Error fetching comments:', error);
+        }
+    }, []);
 
     // Load pending bets from local storage - simplified
     useEffect(() => {
@@ -560,6 +645,53 @@ export function PredictionProvider({ children }: { children: ReactNode }) {
         }
     }, [authenticatedUser?.address]);
 
+    // Auto-refresh comments and likes for the selected prediction (polling)
+    useEffect(() => {
+        if (!selectedPrediction) return;
+
+        const refreshSocialData = async () => {
+            try {
+                await fetchComments(selectedPrediction.id);
+                // Fetch latest likes too
+                const response = await fetch(`/api/predictions/${selectedPrediction.id}/likes`);
+                if (response.ok) {
+                    const likesData = await response.json();
+                    if (likesData.success) {
+                        setSelectedPrediction(prev => {
+                            if (!prev) return null;
+                            return {
+                                ...prev,
+                                likes: likesData.likes.map((l: any) => ({
+                                    id: l.id,
+                                    predictionId: l.predictionId,
+                                    createdAt: l.createdAt,
+                                    user: {
+                                        address: l.userAddress,
+                                        displayName: l.userName,
+                                        profileImageUrl: l.userImage,
+                                    }
+                                })),
+                                likesCount: likesData.count
+                            };
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error('Error refreshing social data:', error);
+            }
+        };
+
+        // Initial fetch
+        refreshSocialData();
+
+        // Set up polling (every 30 seconds)
+        const intervalId = setInterval(refreshSocialData, 30000);
+
+        return () => {
+            clearInterval(intervalId);
+        };
+    }, [selectedPrediction?.id, fetchComments]);
+
     // Simplified save effect - only clears storage to avoid infinite update issues
     useEffect(() => {
         // This effect is kept minimal to prevent render loops
@@ -571,6 +703,301 @@ export function PredictionProvider({ children }: { children: ReactNode }) {
             console.log(`Skipping save of ${pendingBets.length} pending bets to prevent render issues`);
         }
     }, [pendingBets.length, authenticatedUser?.address]);
+
+    // Social Interaction Methods
+    const addComment = useCallback(async (predictionId: string, content: string): Promise<boolean> => {
+        if (!authenticatedUser) {
+            toast({
+                title: "Authentication Required",
+                description: "Please connect your wallet to comment",
+                variant: "destructive"
+            });
+            return false;
+        }
+
+        try {
+            console.log('Authenticated user data:', authenticatedUser);
+
+            // Use helper functions to extract user information
+            const userAddress = authenticatedUser.address;
+            const userName = await getUserName(authenticatedUser);
+            const userImage = getUserImage(authenticatedUser);
+
+            console.log('Sending comment data:', { userAddress, userName, userImage, content });
+
+            // Try to post to Lens Protocol without requiring signature
+            try {
+                // Import dynamically to prevent issues during SSR
+                const { createCommentWithoutSigning } = await import('@/lib/lens/social');
+
+                // Post the comment without requiring signature - this will handle any fallbacks internally
+                const result = await createCommentWithoutSigning(userAddress, predictionId, content);
+
+                console.log('Comment created:', result);
+
+                // Check if we used the fallback
+                if (result.lensStatus === "fallback-to-database") {
+                    console.log("Used database fallback for comment");
+                }
+
+                // Refresh comments
+                await fetchComments(predictionId);
+
+                // Show appropriate toast based on result
+                toast({
+                    title: "Comment Added",
+                    description: result.lensStatus === "fallback-to-database"
+                        ? "Your comment was saved to our database"
+                        : "Your comment was posted successfully to Lens Protocol"
+                });
+
+                return true;
+            } catch (lensError) {
+                // Import error handler dynamically
+                const { formatErrorForLogging } = await import('@/lib/lens/error-handler');
+
+                // Log detailed error
+                const formattedError = formatErrorForLogging(lensError, 'addComment');
+                console.error(formattedError);
+
+                // Try direct database approach as fallback
+                console.log("Lens comment failed, trying direct database insertion");
+
+                try {
+                    const response = await fetch(`/api/predictions/${predictionId}/comments`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            userAddress,
+                            userName,
+                            userImage,
+                            content,
+                        }),
+                    });
+
+                    if (!response.ok) {
+                        console.error('API error response status:', response.status);
+                        let errorMessage = 'Failed to add comment';
+                        let errorDetails = '';
+
+                        try {
+                            const errorData = await response.json();
+                            console.error('API error response:', errorData);
+                            errorMessage = errorData.error || errorMessage;
+                            errorDetails = errorData.details || '';
+
+                            // Log detailed error information
+                            console.error('Comment creation failed:', {
+                                status: response.status,
+                                error: errorMessage,
+                                details: errorDetails
+                            });
+                        } catch (parseError) {
+                            console.error('Failed to parse error response:', parseError);
+                        }
+
+                        throw new Error(`${errorMessage}${errorDetails ? ': ' + errorDetails : ''}`);
+                    }
+
+                    const responseData = await response.json();
+                    console.log('Comment created successfully in local database:', responseData);
+
+                    // Refresh comments after adding a new one
+                    await fetchComments(predictionId);
+
+                    toast({
+                        title: "Comment Added",
+                        description: "Your comment has been posted successfully"
+                    });
+
+                    return true;
+                } catch (dbError) {
+                    // Both Lens and database approaches failed
+                    console.error('Database comment also failed:', dbError);
+                    throw dbError; // Rethrow to be caught by the outer catch
+                }
+            }
+        } catch (error) {
+            console.error('Error adding comment:', error);
+            toast({
+                title: "Comment Failed",
+                description: error instanceof Error ? (error as Error).message : "Failed to post comment",
+                variant: "destructive"
+            });
+            return false;
+        }
+    }, [authenticatedUser, toast, getUserName, getUserImage, fetchComments]);
+
+    // fetchComments function was moved above to fix initialization order
+
+    // Like functionality
+    const toggleLike = useCallback(async (predictionId: string): Promise<boolean> => {
+        if (!authenticatedUser) {
+            toast({
+                title: "Authentication Required",
+                description: "Please connect your wallet to like predictions",
+                variant: "destructive"
+            });
+            return false;
+        }
+
+        try {
+            // Use helper functions to extract user information
+            const userAddress = authenticatedUser.address;
+            const userName = await getUserName(authenticatedUser);
+            const userImage = getUserImage(authenticatedUser);
+
+            // Try to use Lens Protocol for likes without requiring signature
+            let usedLensProtocol = false;
+            try {
+                // Import dynamically to prevent issues during SSR
+                const { likePredictionWithoutSigning } = await import('@/lib/lens/social');
+
+                // Try to create a Lens Protocol like without requiring signature
+                const lensResult = await likePredictionWithoutSigning(userAddress, predictionId);
+
+                console.log('Lens Protocol like created without signing:', lensResult);
+                // If we get here, the Lens like was successful
+                usedLensProtocol = true;
+
+                if (lensResult.success) {
+                    // Refresh likes UI
+                    const response2 = await fetch(`/api/predictions/${predictionId}/likes`);
+                    if (response2.ok) {
+                        const likesData = await response2.json();
+
+                        // Update the selected prediction with likes
+                        setSelectedPrediction(prev => {
+                            if (prev && prev.id === predictionId) {
+                                return {
+                                    ...prev,
+                                    likes: likesData.likes,
+                                    likesCount: likesData.count
+                                };
+                            }
+                            return prev;
+                        });
+                    }
+
+                    return true;
+                }
+            } catch (lensError) {
+                // Import error handler dynamically
+                const { handleLensError, formatErrorForLogging } = await import('@/lib/lens/error-handler');
+
+                // Log detailed Lens error
+                const formattedError = formatErrorForLogging(lensError, 'toggleLike');
+                console.error(formattedError);
+
+                // Continue with traditional like without showing a toast
+                // This provides a smoother UX - we'll just use our local DB
+            }
+
+            // Always update our local database for consistency
+            const response = await fetch(`/api/predictions/${predictionId}/likes`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    userAddress,
+                    userName,
+                    userImage,
+                }),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Failed to toggle like');
+            }
+
+            const data = await response.json();
+            const action = data.action; // 'liked' or 'unliked'
+
+            // Update likes in the UI
+            const response2 = await fetch(`/api/predictions/${predictionId}/likes`);
+            if (response2.ok) {
+                const likesData = await response2.json();
+
+                // Update the selected prediction with likes
+                setSelectedPrediction(prev => {
+                    if (prev && prev.id === predictionId) {
+                        return {
+                            ...prev,
+                            likes: likesData.likes.map((l: any) => ({
+                                id: l.id,
+                                predictionId: l.predictionId,
+                                createdAt: l.createdAt,
+                                user: {
+                                    address: l.userAddress,
+                                    displayName: l.userName,
+                                    profileImageUrl: l.userImage,
+                                }
+                            })),
+                            likesCount: likesData.count
+                        };
+                    }
+                    return prev;
+                });
+
+                // Also update in predictions list if it exists there
+                setPredictions(prev =>
+                    prev.map(p => {
+                        if (p.id === predictionId) {
+                            return {
+                                ...p,
+                                likes: likesData.likes.map((l: any) => ({
+                                    id: l.id,
+                                    predictionId: l.predictionId,
+                                    createdAt: l.createdAt,
+                                    user: {
+                                        address: l.userAddress,
+                                        displayName: l.userName,
+                                        profileImageUrl: l.userImage,
+                                    }
+                                })),
+                                likesCount: likesData.count
+                            };
+                        }
+                        return p;
+                    })
+                );
+            }
+
+            // If we successfully used Lens Protocol, show a toast
+            if (usedLensProtocol) {
+                toast({
+                    title: action === 'liked' ? "Prediction Liked" : "Prediction Unliked",
+                    description: "Your reaction has been shared on Lens Protocol",
+                    variant: "default"
+                });
+            }
+
+            return true;
+        } catch (error) {
+            console.error('Error toggling like:', error);
+            toast({
+                title: "Action Failed",
+                description: error instanceof Error ? error.message : "Failed to like prediction",
+                variant: "destructive"
+            });
+            return false;
+        }
+    }, [authenticatedUser, toast, getUserName, getUserImage, setSelectedPrediction, setPredictions]);
+
+    const isLikedByCurrentUser = useCallback((predictionId: string): boolean => {
+        if (!authenticatedUser) return false;
+
+        const prediction = selectedPrediction?.id === predictionId
+            ? selectedPrediction
+            : predictions.find(p => p.id === predictionId);
+
+        if (!prediction?.likes) return false;
+
+        return prediction.likes.some(like => like.user.address === authenticatedUser.address);
+    }, [authenticatedUser, selectedPrediction, predictions]);
 
     // Context value
     const contextValue = {
@@ -588,7 +1015,11 @@ export function PredictionProvider({ children }: { children: ReactNode }) {
         claimReward,
         setSelectedCategory,
         setUserAddress,
-        syncPendingBets
+        syncPendingBets,
+        addComment,
+        fetchComments,
+        toggleLike,
+        isLikedByCurrentUser
     };
 
     return (

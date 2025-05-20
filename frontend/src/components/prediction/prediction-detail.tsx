@@ -9,6 +9,8 @@ import { Input } from "@/components/ui/input";
 import { formatDistanceToNow, format } from "date-fns";
 import { useAuthenticatedUser } from "@lens-protocol/react";
 import { usePrediction } from "@/lib/contexts/PredictionContext";
+import { CommentSection } from "@/components/prediction/comment-section";
+import { LikeButton } from "@/components/prediction/like-button";
 import {
     Table,
     TableBody,
@@ -24,15 +26,26 @@ interface PredictionDetailProps {
 
 export function PredictionDetail({ predictionId }: PredictionDetailProps) {
     const { data: authenticatedUser } = useAuthenticatedUser();
-    const { fetchPredictionById, selectedPrediction, isLoadingPrediction, placeBet, claimReward } = usePrediction();
+    const {
+        fetchPredictionById,
+        selectedPrediction,
+        isLoadingPrediction,
+        placeBet,
+        claimReward,
+        fetchComments,
+        addComment,
+        toggleLike,
+        isLikedByCurrentUser
+    } = usePrediction();
     const [isPlacingBet, setIsPlacingBet] = useState(false);
     const [isClaimingReward, setIsClaimingReward] = useState(false);
     const [betAmount, setBetAmount] = useState(10);
 
     useEffect(() => {
-        // Fetch prediction details from context
+        // Fetch prediction details and comments
         fetchPredictionById(predictionId);
-    }, [predictionId, fetchPredictionById]);
+        fetchComments(predictionId);
+    }, [predictionId, fetchPredictionById, fetchComments]);
 
     if (isLoadingPrediction || !selectedPrediction) {
         return <div>Loading prediction details...</div>;
@@ -59,6 +72,29 @@ export function PredictionDetail({ predictionId }: PredictionDetailProps) {
         }
     };
 
+    const handleAddComment = async (content: string) => {
+        try {
+            const success = await addComment(predictionId, content);
+            if (success) {
+                // Comment was added successfully
+                await fetchComments(predictionId);
+            }
+        } catch (error) {
+            console.error("Error adding comment:", error);
+        }
+    };
+
+    const handleToggleLike = async () => {
+        try {
+            const success = await toggleLike(predictionId);
+            if (!success) {
+                console.error("Failed to toggle like status");
+            }
+        } catch (error) {
+            console.error("Error toggling like:", error);
+        }
+    };
+
     const handleClaimReward = async () => {
         try {
             setIsClaimingReward(true);
@@ -81,7 +117,7 @@ export function PredictionDetail({ predictionId }: PredictionDetailProps) {
                     <div className="flex items-start justify-between">
                         <div className="flex items-center gap-2">
                             <Avatar className="h-10 w-10">
-                                <AvatarImage src={prediction.creator.profileImageUrl} />
+                                <AvatarImage src={prediction.creator.profileImageUrl || undefined} />
                                 <AvatarFallback>
                                     {prediction.creator.displayName?.substring(0, 2) || "U"}
                                 </AvatarFallback>
@@ -97,6 +133,13 @@ export function PredictionDetail({ predictionId }: PredictionDetailProps) {
                                     </span>
                                 </div>
                             </div>
+                        </div>                    <div>
+                            <LikeButton
+                                predictionId={predictionId}
+                                initialCount={prediction.likesCount || 0}
+                                isLiked={isLikedByCurrentUser(predictionId)}
+                                onToggleLike={handleToggleLike}
+                            />
                         </div>
                     </div>
                 </CardHeader>
@@ -111,11 +154,11 @@ export function PredictionDetail({ predictionId }: PredictionDetailProps) {
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="text-sm bg-green-50 p-3 rounded-md border border-green-100">
                                         <div className="font-semibold text-green-600 mb-1">YES</div>
-                                        <div>{prediction.bets.filter(bet => bet.position).length} bets</div>
+                                        <div>{prediction.bets.filter((bet: BetWithUser) => bet.position).length} bets</div>
                                     </div>
                                     <div className="text-sm bg-red-50 p-3 rounded-md border border-red-100">
                                         <div className="font-semibold text-red-600 mb-1">NO</div>
-                                        <div>{prediction.bets.filter(bet => !bet.position).length} bets</div>
+                                        <div>{prediction.bets.filter((bet: BetWithUser) => !bet.position).length} bets</div>
                                     </div>
                                 </div>
                             </div>
@@ -215,6 +258,7 @@ export function PredictionDetail({ predictionId }: PredictionDetailProps) {
                 )}
             </Card>
 
+            {/* Betting history card */}
             <Card>
                 <CardHeader>
                     <h3 className="text-lg font-medium">Betting History</h3>
@@ -235,7 +279,7 @@ export function PredictionDetail({ predictionId }: PredictionDetailProps) {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {prediction.bets.map((bet) => (
+                                {prediction.bets.map((bet: BetWithUser) => (
                                     <TableRow key={bet.id}>
                                         <TableCell className="flex items-center gap-2">
                                             <Avatar className="h-6 w-6">
@@ -265,6 +309,21 @@ export function PredictionDetail({ predictionId }: PredictionDetailProps) {
                             </TableBody>
                         </Table>
                     )}
+                </CardContent>
+            </Card>
+
+            {/* Comments section card */}
+            <Card>
+                <CardHeader>
+                    <h3 className="text-lg font-medium">Comments</h3>
+                </CardHeader>
+                <CardContent>
+                    <CommentSection
+                        predictionId={predictionId}
+                        comments={prediction.comments || []}
+                        onAddComment={handleAddComment}
+                        isLoading={isLoadingPrediction}
+                    />
                 </CardContent>
             </Card>
         </div>

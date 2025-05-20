@@ -1,3 +1,42 @@
 node_modules
 # Keep environment variables out of version control
 .env
+.env.*
+!.env.example
+
+# Next.js build output
+.next/
+out/
+
+# Vercel build output
+.vercel/
+
+# Build artifacts
+dist/
+build/
+
+# Local development files
+.DS_Store
+*.pem
+.idea/
+.vscode/
+*.log
+*.swp
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+bun-error.log*
+lerna-debug.log*
+
+# Coverage directories
+coverage/
+.nyc_output/
+
+# TypeScript cache
+*.tsbuildinfo
+next-env.d.ts
+
+# Bun
+bun.lock

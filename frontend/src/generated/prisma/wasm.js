@@ -139,7 +139,8 @@ exports.Prisma.PredictionScalarFieldEnum = {
   totalBetsFalse: 'totalBetsFalse',
   isPending: 'isPending',
   hasError: 'hasError',
-  errorMessage: 'errorMessage'
+  errorMessage: 'errorMessage',
+  lensPublicationId: 'lensPublicationId'
 };
 
 exports.Prisma.BetScalarFieldEnum = {
@@ -152,6 +153,26 @@ exports.Prisma.BetScalarFieldEnum = {
   position: 'position',
   createdAt: 'createdAt',
   transactionHash: 'transactionHash'
+};
+
+exports.Prisma.CommentScalarFieldEnum = {
+  id: 'id',
+  predictionId: 'predictionId',
+  userAddress: 'userAddress',
+  userName: 'userName',
+  userImage: 'userImage',
+  content: 'content',
+  createdAt: 'createdAt',
+  lensPublicationId: 'lensPublicationId'
+};
+
+exports.Prisma.LikeScalarFieldEnum = {
+  id: 'id',
+  predictionId: 'predictionId',
+  userAddress: 'userAddress',
+  userName: 'userName',
+  userImage: 'userImage',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.SortOrder = {
@@ -184,7 +205,9 @@ exports.PredictionStatus = exports.$Enums.PredictionStatus = {
 
 exports.Prisma.ModelName = {
   Prediction: 'Prediction',
-  Bet: 'Bet'
+  Bet: 'Bet',
+  Comment: 'Comment',
+  Like: 'Like'
 };
 
 /**

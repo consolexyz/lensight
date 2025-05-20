@@ -14,9 +14,37 @@ export interface PredictionWithUser extends Omit<PrismaPrediction, 'creatorAddre
         displayName?: string | null;
         profileImageUrl?: string | null;
     };
+    comments?: CommentWithUser[];
+    likes?: LikeWithUser[];
+    likesCount?: number;
+    bets: BetWithUser[]; // Add bets to the type
 }
 
 export interface BetWithUser extends Omit<PrismaBet, 'userAddress' | 'userName' | 'userImage'> {
+    user: {
+        address: string;
+        displayName?: string | null;
+        profileImageUrl?: string | null;
+    };
+}
+
+export interface CommentWithUser {
+    id: string;
+    predictionId: string;
+    content: string;
+    createdAt: string;
+    lensPublicationId?: string | null;
+    user: {
+        address: string;
+        displayName?: string | null;
+        profileImageUrl?: string | null;
+    };
+}
+
+export interface LikeWithUser {
+    id: string;
+    predictionId: string;
+    createdAt: string;
     user: {
         address: string;
         displayName?: string | null;
@@ -44,6 +72,36 @@ export function transformBet(bet: PrismaBet): BetWithUser {
             address: bet.userAddress,
             displayName: bet.userName,
             profileImageUrl: bet.userImage,
+        }
+    };
+}
+
+// Helper function to transform Prisma Comment to CommentWithUser
+export function transformComment(comment: any): CommentWithUser {
+    return {
+        id: comment.id,
+        predictionId: comment.predictionId,
+        content: comment.content,
+        createdAt: comment.createdAt.toISOString(),
+        lensPublicationId: comment.lensPublicationId,
+        user: {
+            address: comment.userAddress,
+            displayName: comment.userName,
+            profileImageUrl: comment.userImage,
+        }
+    };
+}
+
+// Helper function to transform Prisma Like to LikeWithUser
+export function transformLike(like: any): LikeWithUser {
+    return {
+        id: like.id,
+        predictionId: like.predictionId,
+        createdAt: like.createdAt.toISOString(),
+        user: {
+            address: like.userAddress,
+            displayName: like.userName,
+            profileImageUrl: like.userImage,
         }
     };
 }

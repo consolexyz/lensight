@@ -46,7 +46,10 @@ model Prediction {
   isPending          Boolean            @default(false)
   hasError           Boolean            @default(false)
   errorMessage       String?
+  lensPublicationId  String? // Link to the Lens Protocol publication ID
   bets               Bet[]
+  comments           Comment[]
+  likes              Like[]
 }
 
 model Bet {
@@ -60,4 +63,28 @@ model Bet {
   position        Boolean // true = YES, false = NO
   createdAt       DateTime   @default(now())
   transactionHash String? // The hash of the blockchain transaction
+}
+
+model Comment {
+  id                String     @id @default(uuid())
+  predictionId      String
+  prediction        Prediction @relation(fields: [predictionId], references: [id])
+  userAddress       String
+  userName          String?
+  userImage         String?
+  content           String
+  createdAt         DateTime   @default(now())
+  lensPublicationId String? // Link to the Lens Protocol comment ID
+}
+
+model Like {
+  id           String     @id @default(uuid())
+  predictionId String
+  prediction   Prediction @relation(fields: [predictionId], references: [id])
+  userAddress  String
+  userName     String?
+  userImage    String?
+  createdAt    DateTime   @default(now())
+
+  @@unique([predictionId, userAddress]) // Prevent duplicate likes
 }
