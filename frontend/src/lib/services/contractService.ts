@@ -240,7 +240,7 @@ export class ContractService {
             const tx = await connectedContract.setResolver(this.oracleAddress);
             const receipt = await tx.wait();
 
-            console.log(`Set oracle as resolver for contract ${contractAddress}, tx: ${tx.hash}`);
+            console.log(`Smiaet oracle as resolver for contract ${contractAddress}, tx: ${tx.hash}`);
             return tx.hash;
         } catch (error) {
             console.error('Error setting oracle as resolver:', error);

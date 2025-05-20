@@ -1,15 +1,21 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 
 export async function POST(
     request: Request,
     { params }: { params: { id: string } }
 ) {
-    const predictionId = params.id;
-
     try {
+        // In Next.js 15+, use destructuring to await params
+        const { id: predictionId } = await params;
+
         const json = await request.json();
         const { userAddress, userName, userImage, content } = json;
+
+        // Validate required fields
+        if (!userAddress) {
+            return NextResponse.json({ error: "User address is required" }, { status: 400 });
+        }
 
         console.log('Creating comment with data:', {
             predictionId,
@@ -18,12 +24,6 @@ export async function POST(
             userImage,
             content
         });
-
-        // Validate required fields
-        if (!userAddress || !content) {
-            console.error('Missing required fields:', { userAddress, content });
-            return NextResponse.json({ error: "User address and content are required" }, { status: 400 });
-        }
 
         // First verify that the prediction exists
         const prediction = await prisma.prediction.findUnique({
@@ -72,16 +72,13 @@ export async function GET(
     request: Request,
     { params }: { params: { id: string } }
 ) {
-    const predictionId = params.id;
-
     try {
+        // In Next.js 15+, use destructuring to await params
+        const { id: predictionId } = await params;
+
         const comments = await prisma.comment.findMany({
-            where: {
-                predictionId,
-            },
-            orderBy: {
-                createdAt: 'desc',
-            },
+            where: { predictionId },
+            orderBy: { createdAt: 'desc' }
         });
 
         return NextResponse.json({
@@ -90,6 +87,9 @@ export async function GET(
         });
     } catch (error) {
         console.error("Error fetching comments:", error);
-        return NextResponse.json({ error: "Failed to fetch comments" }, { status: 500 });
+        return NextResponse.json({
+            error: "Failed to fetch comments",
+            details: error instanceof Error ? error.message : "Unknown error"
+        }, { status: 500 });
     }
 }

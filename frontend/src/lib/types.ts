@@ -53,16 +53,21 @@ export interface LikeWithUser {
 }
 
 // Helper function to transform Prisma Prediction to frontend PredictionWithUser
-export function transformPrediction(prediction: PrismaPrediction): PredictionWithUser {
-    return {
+export function transformPrediction(prediction: any): PredictionWithUser {
+    // Handle missing fields with fallbacks
+    const transformed: PredictionWithUser = {
         ...prediction,
         creator: {
-            address: prediction.creatorAddress,
-            displayName: prediction.creatorName,
-            profileImageUrl: prediction.creatorImage,
+            address: prediction.creatorAddress || "",
+            displayName: prediction.creatorName || null,
+            profileImageUrl: prediction.creatorImage || null,
         },
-        bets: [] // Initialize empty bets array
+        bets: Array.isArray(prediction.bets)
+            ? prediction.bets.map((bet: any) => transformBet(bet))
+            : []
     };
+
+    return transformed;
 }
 
 // Helper function to transform Prisma Bet to frontend BetWithUser

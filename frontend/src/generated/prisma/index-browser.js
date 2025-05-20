@@ -139,8 +139,7 @@ exports.Prisma.PredictionScalarFieldEnum = {
   totalBetsFalse: 'totalBetsFalse',
   isPending: 'isPending',
   hasError: 'hasError',
-  errorMessage: 'errorMessage',
-  lensPublicationId: 'lensPublicationId'
+  errorMessage: 'errorMessage'
 };
 
 exports.Prisma.BetScalarFieldEnum = {
@@ -162,8 +161,7 @@ exports.Prisma.CommentScalarFieldEnum = {
   userName: 'userName',
   userImage: 'userImage',
   content: 'content',
-  createdAt: 'createdAt',
-  lensPublicationId: 'lensPublicationId'
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.LikeScalarFieldEnum = {

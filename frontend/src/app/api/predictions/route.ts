@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { z } from 'zod';
 import { PredictionCategory, PredictionStatus } from '@/generated/prisma';
@@ -15,10 +15,9 @@ const createPredictionSchema = z.object({
     comparisonOperator: z.string().optional(),
 });
 
-export async function GET(request: Request) {
-    const { searchParams } = new URL(request.url);
-    const category = searchParams.get('category');
-    const userAddress = searchParams.get('userAddress');
+export async function GET(request: NextRequest) {
+    const category = request.nextUrl.searchParams.get('category');
+    const userAddress = request.nextUrl.searchParams.get('userAddress');
 
     try {
         const predictions = await prisma.prediction.findMany({
@@ -41,7 +40,7 @@ export async function GET(request: Request) {
     }
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
         const validatedData = createPredictionSchema.parse(body);

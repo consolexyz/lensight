@@ -1265,7 +1265,6 @@ export namespace Prisma {
     isPending: boolean | null
     hasError: boolean | null
     errorMessage: string | null
-    lensPublicationId: string | null
   }
 
   export type PredictionMaxAggregateOutputType = {
@@ -1288,7 +1287,6 @@ export namespace Prisma {
     isPending: boolean | null
     hasError: boolean | null
     errorMessage: string | null
-    lensPublicationId: string | null
   }
 
   export type PredictionCountAggregateOutputType = {
@@ -1311,7 +1309,6 @@ export namespace Prisma {
     isPending: number
     hasError: number
     errorMessage: number
-    lensPublicationId: number
     _all: number
   }
 
@@ -1346,7 +1343,6 @@ export namespace Prisma {
     isPending?: true
     hasError?: true
     errorMessage?: true
-    lensPublicationId?: true
   }
 
   export type PredictionMaxAggregateInputType = {
@@ -1369,7 +1365,6 @@ export namespace Prisma {
     isPending?: true
     hasError?: true
     errorMessage?: true
-    lensPublicationId?: true
   }
 
   export type PredictionCountAggregateInputType = {
@@ -1392,7 +1387,6 @@ export namespace Prisma {
     isPending?: true
     hasError?: true
     errorMessage?: true
-    lensPublicationId?: true
     _all?: true
   }
 
@@ -1502,7 +1496,6 @@ export namespace Prisma {
     isPending: boolean
     hasError: boolean
     errorMessage: string | null
-    lensPublicationId: string | null
     _count: PredictionCountAggregateOutputType | null
     _avg: PredictionAvgAggregateOutputType | null
     _sum: PredictionSumAggregateOutputType | null
@@ -1544,7 +1537,6 @@ export namespace Prisma {
     isPending?: boolean
     hasError?: boolean
     errorMessage?: boolean
-    lensPublicationId?: boolean
     bets?: boolean | Prediction$betsArgs<ExtArgs>
     comments?: boolean | Prediction$commentsArgs<ExtArgs>
     likes?: boolean | Prediction$likesArgs<ExtArgs>
@@ -1571,7 +1563,6 @@ export namespace Prisma {
     isPending?: boolean
     hasError?: boolean
     errorMessage?: boolean
-    lensPublicationId?: boolean
   }, ExtArgs["result"]["prediction"]>
 
   export type PredictionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -1594,7 +1585,6 @@ export namespace Prisma {
     isPending?: boolean
     hasError?: boolean
     errorMessage?: boolean
-    lensPublicationId?: boolean
   }, ExtArgs["result"]["prediction"]>
 
   export type PredictionSelectScalar = {
@@ -1617,10 +1607,9 @@ export namespace Prisma {
     isPending?: boolean
     hasError?: boolean
     errorMessage?: boolean
-    lensPublicationId?: boolean
   }
 
-  export type PredictionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "creatorAddress" | "creatorName" | "creatorImage" | "content" | "category" | "status" | "createdAt" | "expiresAt" | "resolvedAt" | "contractAddress" | "targetPrice" | "comparisonOperator" | "tokenSymbol" | "totalBetsTrue" | "totalBetsFalse" | "isPending" | "hasError" | "errorMessage" | "lensPublicationId", ExtArgs["result"]["prediction"]>
+  export type PredictionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "creatorAddress" | "creatorName" | "creatorImage" | "content" | "category" | "status" | "createdAt" | "expiresAt" | "resolvedAt" | "contractAddress" | "targetPrice" | "comparisonOperator" | "tokenSymbol" | "totalBetsTrue" | "totalBetsFalse" | "isPending" | "hasError" | "errorMessage", ExtArgs["result"]["prediction"]>
   export type PredictionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     bets?: boolean | Prediction$betsArgs<ExtArgs>
     comments?: boolean | Prediction$commentsArgs<ExtArgs>
@@ -1657,7 +1646,6 @@ export namespace Prisma {
       isPending: boolean
       hasError: boolean
       errorMessage: string | null
-      lensPublicationId: string | null
     }, ExtArgs["result"]["prediction"]>
     composites: {}
   }
@@ -2103,7 +2091,6 @@ export namespace Prisma {
     readonly isPending: FieldRef<"Prediction", 'Boolean'>
     readonly hasError: FieldRef<"Prediction", 'Boolean'>
     readonly errorMessage: FieldRef<"Prediction", 'String'>
-    readonly lensPublicationId: FieldRef<"Prediction", 'String'>
   }
     
 
@@ -3744,7 +3731,6 @@ export namespace Prisma {
     userImage: string | null
     content: string | null
     createdAt: Date | null
-    lensPublicationId: string | null
   }
 
   export type CommentMaxAggregateOutputType = {
@@ -3755,7 +3741,6 @@ export namespace Prisma {
     userImage: string | null
     content: string | null
     createdAt: Date | null
-    lensPublicationId: string | null
   }
 
   export type CommentCountAggregateOutputType = {
@@ -3766,7 +3751,6 @@ export namespace Prisma {
     userImage: number
     content: number
     createdAt: number
-    lensPublicationId: number
     _all: number
   }
 
@@ -3779,7 +3763,6 @@ export namespace Prisma {
     userImage?: true
     content?: true
     createdAt?: true
-    lensPublicationId?: true
   }
 
   export type CommentMaxAggregateInputType = {
@@ -3790,7 +3773,6 @@ export namespace Prisma {
     userImage?: true
     content?: true
     createdAt?: true
-    lensPublicationId?: true
   }
 
   export type CommentCountAggregateInputType = {
@@ -3801,7 +3783,6 @@ export namespace Prisma {
     userImage?: true
     content?: true
     createdAt?: true
-    lensPublicationId?: true
     _all?: true
   }
 
@@ -3885,7 +3866,6 @@ export namespace Prisma {
     userImage: string | null
     content: string
     createdAt: Date
-    lensPublicationId: string | null
     _count: CommentCountAggregateOutputType | null
     _min: CommentMinAggregateOutputType | null
     _max: CommentMaxAggregateOutputType | null
@@ -3913,7 +3893,6 @@ export namespace Prisma {
     userImage?: boolean
     content?: boolean
     createdAt?: boolean
-    lensPublicationId?: boolean
     prediction?: boolean | PredictionDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["comment"]>
 
@@ -3925,7 +3904,6 @@ export namespace Prisma {
     userImage?: boolean
     content?: boolean
     createdAt?: boolean
-    lensPublicationId?: boolean
     prediction?: boolean | PredictionDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["comment"]>
 
@@ -3937,7 +3915,6 @@ export namespace Prisma {
     userImage?: boolean
     content?: boolean
     createdAt?: boolean
-    lensPublicationId?: boolean
     prediction?: boolean | PredictionDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["comment"]>
 
@@ -3949,10 +3926,9 @@ export namespace Prisma {
     userImage?: boolean
     content?: boolean
     createdAt?: boolean
-    lensPublicationId?: boolean
   }
 
-  export type CommentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "predictionId" | "userAddress" | "userName" | "userImage" | "content" | "createdAt" | "lensPublicationId", ExtArgs["result"]["comment"]>
+  export type CommentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "predictionId" | "userAddress" | "userName" | "userImage" | "content" | "createdAt", ExtArgs["result"]["comment"]>
   export type CommentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     prediction?: boolean | PredictionDefaultArgs<ExtArgs>
   }
@@ -3976,7 +3952,6 @@ export namespace Prisma {
       userImage: string | null
       content: string
       createdAt: Date
-      lensPublicationId: string | null
     }, ExtArgs["result"]["comment"]>
     composites: {}
   }
@@ -4408,7 +4383,6 @@ export namespace Prisma {
     readonly userImage: FieldRef<"Comment", 'String'>
     readonly content: FieldRef<"Comment", 'String'>
     readonly createdAt: FieldRef<"Comment", 'DateTime'>
-    readonly lensPublicationId: FieldRef<"Comment", 'String'>
   }
     
 
@@ -5927,8 +5901,7 @@ export namespace Prisma {
     totalBetsFalse: 'totalBetsFalse',
     isPending: 'isPending',
     hasError: 'hasError',
-    errorMessage: 'errorMessage',
-    lensPublicationId: 'lensPublicationId'
+    errorMessage: 'errorMessage'
   };
 
   export type PredictionScalarFieldEnum = (typeof PredictionScalarFieldEnum)[keyof typeof PredictionScalarFieldEnum]
@@ -5956,8 +5929,7 @@ export namespace Prisma {
     userName: 'userName',
     userImage: 'userImage',
     content: 'content',
-    createdAt: 'createdAt',
-    lensPublicationId: 'lensPublicationId'
+    createdAt: 'createdAt'
   };
 
   export type CommentScalarFieldEnum = (typeof CommentScalarFieldEnum)[keyof typeof CommentScalarFieldEnum]
@@ -6121,7 +6093,6 @@ export namespace Prisma {
     isPending?: BoolFilter<"Prediction"> | boolean
     hasError?: BoolFilter<"Prediction"> | boolean
     errorMessage?: StringNullableFilter<"Prediction"> | string | null
-    lensPublicationId?: StringNullableFilter<"Prediction"> | string | null
     bets?: BetListRelationFilter
     comments?: CommentListRelationFilter
     likes?: LikeListRelationFilter
@@ -6147,7 +6118,6 @@ export namespace Prisma {
     isPending?: SortOrder
     hasError?: SortOrder
     errorMessage?: SortOrderInput | SortOrder
-    lensPublicationId?: SortOrderInput | SortOrder
     bets?: BetOrderByRelationAggregateInput
     comments?: CommentOrderByRelationAggregateInput
     likes?: LikeOrderByRelationAggregateInput
@@ -6176,7 +6146,6 @@ export namespace Prisma {
     isPending?: BoolFilter<"Prediction"> | boolean
     hasError?: BoolFilter<"Prediction"> | boolean
     errorMessage?: StringNullableFilter<"Prediction"> | string | null
-    lensPublicationId?: StringNullableFilter<"Prediction"> | string | null
     bets?: BetListRelationFilter
     comments?: CommentListRelationFilter
     likes?: LikeListRelationFilter
@@ -6202,7 +6171,6 @@ export namespace Prisma {
     isPending?: SortOrder
     hasError?: SortOrder
     errorMessage?: SortOrderInput | SortOrder
-    lensPublicationId?: SortOrderInput | SortOrder
     _count?: PredictionCountOrderByAggregateInput
     _avg?: PredictionAvgOrderByAggregateInput
     _max?: PredictionMaxOrderByAggregateInput
@@ -6233,7 +6201,6 @@ export namespace Prisma {
     isPending?: BoolWithAggregatesFilter<"Prediction"> | boolean
     hasError?: BoolWithAggregatesFilter<"Prediction"> | boolean
     errorMessage?: StringNullableWithAggregatesFilter<"Prediction"> | string | null
-    lensPublicationId?: StringNullableWithAggregatesFilter<"Prediction"> | string | null
   }
 
   export type BetWhereInput = {
@@ -6324,7 +6291,6 @@ export namespace Prisma {
     userImage?: StringNullableFilter<"Comment"> | string | null
     content?: StringFilter<"Comment"> | string
     createdAt?: DateTimeFilter<"Comment"> | Date | string
-    lensPublicationId?: StringNullableFilter<"Comment"> | string | null
     prediction?: XOR<PredictionScalarRelationFilter, PredictionWhereInput>
   }
 
@@ -6336,7 +6302,6 @@ export namespace Prisma {
     userImage?: SortOrderInput | SortOrder
     content?: SortOrder
     createdAt?: SortOrder
-    lensPublicationId?: SortOrderInput | SortOrder
     prediction?: PredictionOrderByWithRelationInput
   }
 
@@ -6351,7 +6316,6 @@ export namespace Prisma {
     userImage?: StringNullableFilter<"Comment"> | string | null
     content?: StringFilter<"Comment"> | string
     createdAt?: DateTimeFilter<"Comment"> | Date | string
-    lensPublicationId?: StringNullableFilter<"Comment"> | string | null
     prediction?: XOR<PredictionScalarRelationFilter, PredictionWhereInput>
   }, "id">
 
@@ -6363,7 +6327,6 @@ export namespace Prisma {
     userImage?: SortOrderInput | SortOrder
     content?: SortOrder
     createdAt?: SortOrder
-    lensPublicationId?: SortOrderInput | SortOrder
     _count?: CommentCountOrderByAggregateInput
     _max?: CommentMaxOrderByAggregateInput
     _min?: CommentMinOrderByAggregateInput
@@ -6380,7 +6343,6 @@ export namespace Prisma {
     userImage?: StringNullableWithAggregatesFilter<"Comment"> | string | null
     content?: StringWithAggregatesFilter<"Comment"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Comment"> | Date | string
-    lensPublicationId?: StringNullableWithAggregatesFilter<"Comment"> | string | null
   }
 
   export type LikeWhereInput = {
@@ -6464,7 +6426,6 @@ export namespace Prisma {
     isPending?: boolean
     hasError?: boolean
     errorMessage?: string | null
-    lensPublicationId?: string | null
     bets?: BetCreateNestedManyWithoutPredictionInput
     comments?: CommentCreateNestedManyWithoutPredictionInput
     likes?: LikeCreateNestedManyWithoutPredictionInput
@@ -6490,7 +6451,6 @@ export namespace Prisma {
     isPending?: boolean
     hasError?: boolean
     errorMessage?: string | null
-    lensPublicationId?: string | null
     bets?: BetUncheckedCreateNestedManyWithoutPredictionInput
     comments?: CommentUncheckedCreateNestedManyWithoutPredictionInput
     likes?: LikeUncheckedCreateNestedManyWithoutPredictionInput
@@ -6516,7 +6476,6 @@ export namespace Prisma {
     isPending?: BoolFieldUpdateOperationsInput | boolean
     hasError?: BoolFieldUpdateOperationsInput | boolean
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
-    lensPublicationId?: NullableStringFieldUpdateOperationsInput | string | null
     bets?: BetUpdateManyWithoutPredictionNestedInput
     comments?: CommentUpdateManyWithoutPredictionNestedInput
     likes?: LikeUpdateManyWithoutPredictionNestedInput
@@ -6542,7 +6501,6 @@ export namespace Prisma {
     isPending?: BoolFieldUpdateOperationsInput | boolean
     hasError?: BoolFieldUpdateOperationsInput | boolean
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
-    lensPublicationId?: NullableStringFieldUpdateOperationsInput | string | null
     bets?: BetUncheckedUpdateManyWithoutPredictionNestedInput
     comments?: CommentUncheckedUpdateManyWithoutPredictionNestedInput
     likes?: LikeUncheckedUpdateManyWithoutPredictionNestedInput
@@ -6568,7 +6526,6 @@ export namespace Prisma {
     isPending?: boolean
     hasError?: boolean
     errorMessage?: string | null
-    lensPublicationId?: string | null
   }
 
   export type PredictionUpdateManyMutationInput = {
@@ -6591,7 +6548,6 @@ export namespace Prisma {
     isPending?: BoolFieldUpdateOperationsInput | boolean
     hasError?: BoolFieldUpdateOperationsInput | boolean
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
-    lensPublicationId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type PredictionUncheckedUpdateManyInput = {
@@ -6614,7 +6570,6 @@ export namespace Prisma {
     isPending?: BoolFieldUpdateOperationsInput | boolean
     hasError?: BoolFieldUpdateOperationsInput | boolean
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
-    lensPublicationId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type BetCreateInput = {
@@ -6707,7 +6662,6 @@ export namespace Prisma {
     userImage?: string | null
     content: string
     createdAt?: Date | string
-    lensPublicationId?: string | null
     prediction: PredictionCreateNestedOneWithoutCommentsInput
   }
 
@@ -6719,7 +6673,6 @@ export namespace Prisma {
     userImage?: string | null
     content: string
     createdAt?: Date | string
-    lensPublicationId?: string | null
   }
 
   export type CommentUpdateInput = {
@@ -6729,7 +6682,6 @@ export namespace Prisma {
     userImage?: NullableStringFieldUpdateOperationsInput | string | null
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    lensPublicationId?: NullableStringFieldUpdateOperationsInput | string | null
     prediction?: PredictionUpdateOneRequiredWithoutCommentsNestedInput
   }
 
@@ -6741,7 +6693,6 @@ export namespace Prisma {
     userImage?: NullableStringFieldUpdateOperationsInput | string | null
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    lensPublicationId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type CommentCreateManyInput = {
@@ -6752,7 +6703,6 @@ export namespace Prisma {
     userImage?: string | null
     content: string
     createdAt?: Date | string
-    lensPublicationId?: string | null
   }
 
   export type CommentUpdateManyMutationInput = {
@@ -6762,7 +6712,6 @@ export namespace Prisma {
     userImage?: NullableStringFieldUpdateOperationsInput | string | null
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    lensPublicationId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type CommentUncheckedUpdateManyInput = {
@@ -6773,7 +6722,6 @@ export namespace Prisma {
     userImage?: NullableStringFieldUpdateOperationsInput | string | null
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    lensPublicationId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type LikeCreateInput = {
@@ -6975,7 +6923,6 @@ export namespace Prisma {
     isPending?: SortOrder
     hasError?: SortOrder
     errorMessage?: SortOrder
-    lensPublicationId?: SortOrder
   }
 
   export type PredictionAvgOrderByAggregateInput = {
@@ -7003,7 +6950,6 @@ export namespace Prisma {
     isPending?: SortOrder
     hasError?: SortOrder
     errorMessage?: SortOrder
-    lensPublicationId?: SortOrder
   }
 
   export type PredictionMinOrderByAggregateInput = {
@@ -7026,7 +6972,6 @@ export namespace Prisma {
     isPending?: SortOrder
     hasError?: SortOrder
     errorMessage?: SortOrder
-    lensPublicationId?: SortOrder
   }
 
   export type PredictionSumOrderByAggregateInput = {
@@ -7199,7 +7144,6 @@ export namespace Prisma {
     userImage?: SortOrder
     content?: SortOrder
     createdAt?: SortOrder
-    lensPublicationId?: SortOrder
   }
 
   export type CommentMaxOrderByAggregateInput = {
@@ -7210,7 +7154,6 @@ export namespace Prisma {
     userImage?: SortOrder
     content?: SortOrder
     createdAt?: SortOrder
-    lensPublicationId?: SortOrder
   }
 
   export type CommentMinOrderByAggregateInput = {
@@ -7221,7 +7164,6 @@ export namespace Prisma {
     userImage?: SortOrder
     content?: SortOrder
     createdAt?: SortOrder
-    lensPublicationId?: SortOrder
   }
 
   export type LikePredictionIdUserAddressCompoundUniqueInput = {
@@ -7707,7 +7649,6 @@ export namespace Prisma {
     userImage?: string | null
     content: string
     createdAt?: Date | string
-    lensPublicationId?: string | null
   }
 
   export type CommentUncheckedCreateWithoutPredictionInput = {
@@ -7717,7 +7658,6 @@ export namespace Prisma {
     userImage?: string | null
     content: string
     createdAt?: Date | string
-    lensPublicationId?: string | null
   }
 
   export type CommentCreateOrConnectWithoutPredictionInput = {
@@ -7814,7 +7754,6 @@ export namespace Prisma {
     userImage?: StringNullableFilter<"Comment"> | string | null
     content?: StringFilter<"Comment"> | string
     createdAt?: DateTimeFilter<"Comment"> | Date | string
-    lensPublicationId?: StringNullableFilter<"Comment"> | string | null
   }
 
   export type LikeUpsertWithWhereUniqueWithoutPredictionInput = {
@@ -7865,7 +7804,6 @@ export namespace Prisma {
     isPending?: boolean
     hasError?: boolean
     errorMessage?: string | null
-    lensPublicationId?: string | null
     comments?: CommentCreateNestedManyWithoutPredictionInput
     likes?: LikeCreateNestedManyWithoutPredictionInput
   }
@@ -7890,7 +7828,6 @@ export namespace Prisma {
     isPending?: boolean
     hasError?: boolean
     errorMessage?: string | null
-    lensPublicationId?: string | null
     comments?: CommentUncheckedCreateNestedManyWithoutPredictionInput
     likes?: LikeUncheckedCreateNestedManyWithoutPredictionInput
   }
@@ -7931,7 +7868,6 @@ export namespace Prisma {
     isPending?: BoolFieldUpdateOperationsInput | boolean
     hasError?: BoolFieldUpdateOperationsInput | boolean
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
-    lensPublicationId?: NullableStringFieldUpdateOperationsInput | string | null
     comments?: CommentUpdateManyWithoutPredictionNestedInput
     likes?: LikeUpdateManyWithoutPredictionNestedInput
   }
@@ -7956,7 +7892,6 @@ export namespace Prisma {
     isPending?: BoolFieldUpdateOperationsInput | boolean
     hasError?: BoolFieldUpdateOperationsInput | boolean
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
-    lensPublicationId?: NullableStringFieldUpdateOperationsInput | string | null
     comments?: CommentUncheckedUpdateManyWithoutPredictionNestedInput
     likes?: LikeUncheckedUpdateManyWithoutPredictionNestedInput
   }
@@ -7981,7 +7916,6 @@ export namespace Prisma {
     isPending?: boolean
     hasError?: boolean
     errorMessage?: string | null
-    lensPublicationId?: string | null
     bets?: BetCreateNestedManyWithoutPredictionInput
     likes?: LikeCreateNestedManyWithoutPredictionInput
   }
@@ -8006,7 +7940,6 @@ export namespace Prisma {
     isPending?: boolean
     hasError?: boolean
     errorMessage?: string | null
-    lensPublicationId?: string | null
     bets?: BetUncheckedCreateNestedManyWithoutPredictionInput
     likes?: LikeUncheckedCreateNestedManyWithoutPredictionInput
   }
@@ -8047,7 +7980,6 @@ export namespace Prisma {
     isPending?: BoolFieldUpdateOperationsInput | boolean
     hasError?: BoolFieldUpdateOperationsInput | boolean
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
-    lensPublicationId?: NullableStringFieldUpdateOperationsInput | string | null
     bets?: BetUpdateManyWithoutPredictionNestedInput
     likes?: LikeUpdateManyWithoutPredictionNestedInput
   }
@@ -8072,7 +8004,6 @@ export namespace Prisma {
     isPending?: BoolFieldUpdateOperationsInput | boolean
     hasError?: BoolFieldUpdateOperationsInput | boolean
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
-    lensPublicationId?: NullableStringFieldUpdateOperationsInput | string | null
     bets?: BetUncheckedUpdateManyWithoutPredictionNestedInput
     likes?: LikeUncheckedUpdateManyWithoutPredictionNestedInput
   }
@@ -8097,7 +8028,6 @@ export namespace Prisma {
     isPending?: boolean
     hasError?: boolean
     errorMessage?: string | null
-    lensPublicationId?: string | null
     bets?: BetCreateNestedManyWithoutPredictionInput
     comments?: CommentCreateNestedManyWithoutPredictionInput
   }
@@ -8122,7 +8052,6 @@ export namespace Prisma {
     isPending?: boolean
     hasError?: boolean
     errorMessage?: string | null
-    lensPublicationId?: string | null
     bets?: BetUncheckedCreateNestedManyWithoutPredictionInput
     comments?: CommentUncheckedCreateNestedManyWithoutPredictionInput
   }
@@ -8163,7 +8092,6 @@ export namespace Prisma {
     isPending?: BoolFieldUpdateOperationsInput | boolean
     hasError?: BoolFieldUpdateOperationsInput | boolean
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
-    lensPublicationId?: NullableStringFieldUpdateOperationsInput | string | null
     bets?: BetUpdateManyWithoutPredictionNestedInput
     comments?: CommentUpdateManyWithoutPredictionNestedInput
   }
@@ -8188,7 +8116,6 @@ export namespace Prisma {
     isPending?: BoolFieldUpdateOperationsInput | boolean
     hasError?: BoolFieldUpdateOperationsInput | boolean
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
-    lensPublicationId?: NullableStringFieldUpdateOperationsInput | string | null
     bets?: BetUncheckedUpdateManyWithoutPredictionNestedInput
     comments?: CommentUncheckedUpdateManyWithoutPredictionNestedInput
   }
@@ -8211,7 +8138,6 @@ export namespace Prisma {
     userImage?: string | null
     content: string
     createdAt?: Date | string
-    lensPublicationId?: string | null
   }
 
   export type LikeCreateManyPredictionInput = {
@@ -8262,7 +8188,6 @@ export namespace Prisma {
     userImage?: NullableStringFieldUpdateOperationsInput | string | null
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    lensPublicationId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type CommentUncheckedUpdateWithoutPredictionInput = {
@@ -8272,7 +8197,6 @@ export namespace Prisma {
     userImage?: NullableStringFieldUpdateOperationsInput | string | null
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    lensPublicationId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type CommentUncheckedUpdateManyWithoutPredictionInput = {
@@ -8282,7 +8206,6 @@ export namespace Prisma {
     userImage?: NullableStringFieldUpdateOperationsInput | string | null
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    lensPublicationId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type LikeUpdateWithoutPredictionInput = {

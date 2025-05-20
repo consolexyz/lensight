@@ -81,63 +81,74 @@ Ready to predict the future? Here's how to run Lensight locally:
    cd lensight
    ```
 
-2. Install dependencies:
+2. Deploy Smart Contracts:
    ```sh
-   bun install
+   # First, install Hardhat dependencies
+   cd hardhat
+   npm install
+
+   # Set up your environment variables
+   cp .env.example .env
+   ```
+   
+   Edit `hardhat/.env` and add your deployer wallet's private key:
+   ```sh
+   PRIVATE_KEY=your_wallet_private_key
+   ALCHEMY_API_KEY=your_alchemy_api_key
    ```
 
-3. Set up your environment variables:
+   Deploy the contracts:
    ```sh
+   # The deployment script will output the contract address
+   # You can find it in hardhat/deploy/deploy-lens-mainnet.ts
+   ```
+
+   After deployment, save the PredictionMarketFactory contract address from the console output or deployment file. You'll need it for the frontend configuration.
+
+3. Set up Frontend:
+   ```sh
+   # Navigate to frontend directory
+   cd ../frontend
+   
+   # Install dependencies
+   bun install
+
+   # Set up environment variables
    cp .env.example .env
    ```
 
-4. Create a Lens app at [https://developer.lens.xyz/apps](https://developer.lens.xyz/apps) and add your App ID to `.env`
+   Edit `frontend/.env` with your configuration:
+ 
 
-5. Start the development servers:
-   
-   For the frontend:
+4. Create a Lens app at [https://developer.lens.xyz/apps](https://developer.lens.xyz/apps) and add your App ID to `frontend/.env`
+
+5. Start the Frontend:
    ```sh
+   # Make sure you're in the frontend directory
    cd frontend
    bun run dev
-   ```
-   
-   For the smart contracts (optional, for local development):
-   ```sh
-   cd hardhat
-   bun run node
    ```
 
 6. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-## 🔧 Key Features
 
-- **Human-readable Profiles**: View Lens usernames instead of cryptic addresses
-- **Real-time Updates**: See predictions, bets, and comments in real-time
-- **Responsive Design**: Works seamlessly on desktop and mobile
-- **Secure Authentication**: Connect securely with your Web3 wallet
-- **Categories**: Browse and filter predictions by categories
-- **Smart UI**: Modern, intuitive UI with light and dark modes
-- **Win Tracking**: Track your wins, losses, and overall performance
 
-## 🛠️ Technology Stack
+ **Manual Resolution**:
 
-### Frontend
-- **Framework**: [Next.js 15](https://nextjs.org/)
-- **Language**: [TypeScript 5](https://www.typescriptlang.org/)
-- **Styling**: [Tailwind CSS 4](https://tailwindcss.com/)
-- **UI Components**: [Shadcn UI](https://ui.shadcn.com/)
-- **Lens Integration**: 
-  - `@lens-protocol/client` 
-  - `@lens-protocol/react`
-- **Web3**: [ConnectKit](https://docs.family.co/connectkit), [wagmi](https://wagmi.sh/)
+   - Use the resolution API endpoint:
+   ```sh
+   curl -X POST http://localhost:3000/api/predictions/resolve \
+     -H "Content-Type: application/json" \
+     -d '{"outcome": true, "resolverAddress": "0x...", "signature": "0x..."}'
+   ```
 
-### Backend & Blockchain
-- **Smart Contracts**: Solidity (deployed on Mainnet)
-- **Development**: Hardhat
-- **Database**: PostgreSQL with Prisma ORM
-- **API**: Next.js API routes
+   This service will:
+   - Find all expired predictions
+   - Resolve price-based predictions automatically
+   - Update prediction statuses
+   - Trigger reward distribution
 
-## 💻 Development
+
 
 - **Script Commands**:
   - `bun run dev` - Start development server
@@ -168,34 +179,6 @@ lensight/
     └── test/               # Contract test files
 ```
 
-
-
-## 🧠 Decentralized Architecture
-
-Lensight combines on-chain and off-chain components to create an efficient and user-friendly experience:
-
-### On-Chain (Blockchain)
-- **Market Creation & Logic**: All core prediction market functionality executes on-chain
-- **Betting Mechanism**: Funds are secured and managed by smart contracts
-- **Reward Distribution**: Winners claim their rewards directly from contracts
-
-### Off-Chain (Web2)
-- **User Interface**: React/Next.js frontend for a smooth user experience
-- **Metadata Storage**: Prisma/PostgreSQL for efficient retrieval of market details
-- **Social Features**: Comments and reputation tracking
-- **Identity Layer**: Integration with Lens Protocol for human-readable names
-
-This hybrid architecture provides the security of blockchain with the usability of modern web applications, making prediction markets accessible to everyone.
-
-## 🔄 Lens Protocol Integration
-
-Lensight uses Lens Protocol V3 to provide a social layer for the prediction platform:
-
-- **Username Resolution**: Converts wallet addresses to human-readable Lens usernames
-- **Profile Data**: Displays profile pictures and information from Lens Protocol
-- **Social Interactions**: Enables commenting and sharing of predictions
-
-The integration is handled through custom hooks like `useLensAddress` which fetch usernames from the Lens Protocol API and display them in components like `LensAddressDisplay`.
 
 ## 🤝 Contributing
 

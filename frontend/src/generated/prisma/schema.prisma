@@ -46,7 +46,6 @@ model Prediction {
   isPending          Boolean            @default(false)
   hasError           Boolean            @default(false)
   errorMessage       String?
-  lensPublicationId  String? // Link to the Lens Protocol publication ID
   bets               Bet[]
   comments           Comment[]
   likes              Like[]
@@ -66,15 +65,14 @@ model Bet {
 }
 
 model Comment {
-  id                String     @id @default(uuid())
-  predictionId      String
-  prediction        Prediction @relation(fields: [predictionId], references: [id])
-  userAddress       String
-  userName          String?
-  userImage         String?
-  content           String
-  createdAt         DateTime   @default(now())
-  lensPublicationId String? // Link to the Lens Protocol comment ID
+  id           String     @id @default(uuid())
+  predictionId String
+  prediction   Prediction @relation(fields: [predictionId], references: [id])
+  userAddress  String
+  userName     String?
+  userImage    String?
+  content      String
+  createdAt    DateTime   @default(now())
 }
 
 model Like {

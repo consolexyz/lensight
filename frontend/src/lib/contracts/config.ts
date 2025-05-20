@@ -5,7 +5,7 @@
 export const contractConfig = {
     // Lens Chain Mainnet Only
     mainnet: {
-        factoryAddress: process.env.NEXT_PUBLIC_MAINNET_FACTORY_ADDRESS || '',
+        factoryAddress: process.env.NEXT_PUBLIC_PREDICTION_FACTORY_ADDRESS || '',
         chainId: 232,
         rpcUrl: 'https://rpc.lens.xyz',
         explorerUrl: 'https://explorer.lens.xyz',

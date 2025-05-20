@@ -5,9 +5,9 @@ export async function POST(
     request: Request,
     { params }: { params: { id: string } }
 ) {
-    const predictionId = params.id;
-
     try {
+        // In Next.js 15+, use destructuring to await params
+        const { id: predictionId } = await params;
         const json = await request.json();
         const { userAddress, userName, userImage } = json;
 
@@ -63,9 +63,10 @@ export async function GET(
     request: Request,
     { params }: { params: { id: string } }
 ) {
-    const predictionId = params.id;
-
     try {
+        // In Next.js 15+, use destructuring to await params
+        const { id: predictionId } = await params;
+
         const likes = await prisma.like.findMany({
             where: {
                 predictionId,

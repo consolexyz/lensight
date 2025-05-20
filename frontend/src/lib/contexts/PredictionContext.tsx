@@ -844,58 +844,11 @@ export function PredictionProvider({ children }: { children: ReactNode }) {
         }
 
         try {
-            // Use helper functions to extract user information
             const userAddress = authenticatedUser.address;
             const userName = await getUserName(authenticatedUser);
             const userImage = getUserImage(authenticatedUser);
 
-            // Try to use Lens Protocol for likes without requiring signature
-            let usedLensProtocol = false;
-            try {
-                // Import dynamically to prevent issues during SSR
-                const { likePredictionWithoutSigning } = await import('@/lib/lens/social');
-
-                // Try to create a Lens Protocol like without requiring signature
-                const lensResult = await likePredictionWithoutSigning(userAddress, predictionId);
-
-                console.log('Lens Protocol like created without signing:', lensResult);
-                // If we get here, the Lens like was successful
-                usedLensProtocol = true;
-
-                if (lensResult.success) {
-                    // Refresh likes UI
-                    const response2 = await fetch(`/api/predictions/${predictionId}/likes`);
-                    if (response2.ok) {
-                        const likesData = await response2.json();
-
-                        // Update the selected prediction with likes
-                        setSelectedPrediction(prev => {
-                            if (prev && prev.id === predictionId) {
-                                return {
-                                    ...prev,
-                                    likes: likesData.likes,
-                                    likesCount: likesData.count
-                                };
-                            }
-                            return prev;
-                        });
-                    }
-
-                    return true;
-                }
-            } catch (lensError) {
-                // Import error handler dynamically
-                const { handleLensError, formatErrorForLogging } = await import('@/lib/lens/error-handler');
-
-                // Log detailed Lens error
-                const formattedError = formatErrorForLogging(lensError, 'toggleLike');
-                console.error(formattedError);
-
-                // Continue with traditional like without showing a toast
-                // This provides a smoother UX - we'll just use our local DB
-            }
-
-            // Always update our local database for consistency
+            // Update the like in our database
             const response = await fetch(`/api/predictions/${predictionId}/likes`, {
                 method: 'POST',
                 headers: {
@@ -913,10 +866,7 @@ export function PredictionProvider({ children }: { children: ReactNode }) {
                 throw new Error(errorData.error || 'Failed to toggle like');
             }
 
-            const data = await response.json();
-            const action = data.action; // 'liked' or 'unliked'
-
-            // Update likes in the UI
+            // Get updated likes
             const response2 = await fetch(`/api/predictions/${predictionId}/likes`);
             if (response2.ok) {
                 const likesData = await response2.json();
@@ -966,26 +916,17 @@ export function PredictionProvider({ children }: { children: ReactNode }) {
                 );
             }
 
-            // If we successfully used Lens Protocol, show a toast
-            if (usedLensProtocol) {
-                toast({
-                    title: action === 'liked' ? "Prediction Liked" : "Prediction Unliked",
-                    description: "Your reaction has been shared on Lens Protocol",
-                    variant: "default"
-                });
-            }
-
             return true;
         } catch (error) {
             console.error('Error toggling like:', error);
             toast({
                 title: "Action Failed",
-                description: error instanceof Error ? error.message : "Failed to like prediction",
+                description: error instanceof Error ? (error as Error).message : "Failed to toggle like",
                 variant: "destructive"
             });
             return false;
         }
-    }, [authenticatedUser, toast, getUserName, getUserImage, setSelectedPrediction, setPredictions]);
+    }, [authenticatedUser, toast, getUserName, getUserImage]);
 
     const isLikedByCurrentUser = useCallback((predictionId: string): boolean => {
         if (!authenticatedUser) return false;

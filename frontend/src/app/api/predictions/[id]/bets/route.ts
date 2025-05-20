@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import prisma from '@/lib/prisma';
 import { z } from 'zod';
 
@@ -17,8 +17,8 @@ export async function POST(
     { params }: { params: { id: string } }
 ) {
     try {
-        // Get the ID from params before using it
-        const predictionId = params?.id;
+        // In Next.js 15+, use destructuring to await params
+        const { id: predictionId } = await params;
         console.log(`Processing bet for prediction ID: ${predictionId}`);
 
         // Validate prediction ID format
@@ -274,11 +274,12 @@ export async function POST(
 
 // GET /api/predictions/[id]/bets
 export async function GET(
-    request: Request,
+    request: NextRequest,
     { params }: { params: { id: string } }
 ) {
     try {
-        const predictionId = params?.id;
+        // In Next.js 15+, use destructuring to await params
+        const { id: predictionId } = await params;
         const bets = await prisma.bet.findMany({
             where: { predictionId },
             orderBy: {

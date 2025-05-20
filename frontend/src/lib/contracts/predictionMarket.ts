@@ -9,9 +9,10 @@ import {
 } from 'viem';
 import { lensChainMainnet } from './chains';
 import type { Address } from 'viem';
+import 'dotenv/config';
 
 // Contract addresses
-const PREDICTION_MARKET_FACTORY_ADDRESS = "0x25532FC37C702cd332e3EC781F32c5a8CB01e300";
+const PREDICTION_MARKET_FACTORY_ADDRESS = process.env.NEXT_PUBLIC_PREDICTION_FACTORY_ADDRESS;
 
 // ABI for the specific functions we need
 const PREDICTION_MARKET_FACTORY_ABI = parseAbi([

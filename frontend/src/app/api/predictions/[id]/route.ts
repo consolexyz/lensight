@@ -8,8 +8,10 @@ export async function GET(
     { params }: { params: { id: string } }
 ) {
     try {
-        // Properly type and extract the ID parameter
-        const id = params?.id;
+        // In Next.js 15+, use destructuring to await params
+        const { id } = await params;
+
+        console.log(`Fetching prediction with ID: ${id}`);
 
         const prediction = await prisma.prediction.findUnique({
             where: { id },
@@ -19,15 +21,25 @@ export async function GET(
                         createdAt: "desc",
                     },
                 },
+                likes: true,
+                comments: {
+                    orderBy: {
+                        createdAt: "desc",
+                    },
+                },
             },
         });
 
         if (!prediction) {
+            console.log(`Prediction with ID ${id} not found`);
             return NextResponse.json(
                 { error: "Prediction not found" },
                 { status: 404 }
             );
         }
+
+        // Log prediction data to help with debugging
+        console.log(`Found prediction: ${prediction.id}, creator: ${prediction.creatorAddress || 'undefined'}`);
 
         return NextResponse.json({ prediction });
     } catch (error) {
@@ -42,11 +54,10 @@ export async function GET(
 // PATCH /api/predictions/[id]
 export async function PATCH(
     request: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: { id: Promise<string> | string } }
 ) {
     try {
-        // Get the ID from params before using it
-        const id = params?.id;
+        const id = typeof params.id === 'string' ? params.id : await params.id;
 
         const body = await request.json();
         const { status, resolvedAt } = body;

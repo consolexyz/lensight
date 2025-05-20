@@ -1,7 +1,10 @@
 import { type Abi } from 'viem';
 
 // Contract addresses
-export const PREDICTION_MARKET_FACTORY_ADDRESS = "0xe052043ebb03C30EE33a5190705d8393C715c93F";
+export const PREDICTION_MARKET_FACTORY_ADDRESS = process.env.NEXT_PUBLIC_PREDICTION_FACTORY_ADDRESS;
+if (!PREDICTION_MARKET_FACTORY_ADDRESS) {
+    throw new Error("NEXT_PUBLIC_PREDICTION_FACTORY_ADDRESS is not set in environment variables");
+}
 
 // ABI for the specific functions we need
 export const PREDICTION_MARKET_FACTORY_ABI = [

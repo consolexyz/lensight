@@ -31,7 +31,10 @@ import { lensChainMainnet } from "@/lib/contracts/chains";
 import { v4 as uuid } from "uuid";
 import PredictionMarketFactoryContract from "@/lib/contracts/abis/PredictionMarketFactory.json";
 
-const PREDICTION_MARKET_FACTORY_ADDRESS = "0x25532FC37C702cd332e3EC781F32c5a8CB01e300";
+const PREDICTION_MARKET_FACTORY_ADDRESS = process.env.NEXT_PUBLIC_PREDICTION_FACTORY_ADDRESS;
+if (!PREDICTION_MARKET_FACTORY_ADDRESS) {
+    throw new Error("NEXT_PUBLIC_PREDICTION_FACTORY_ADDRESS is not set in environment variables");
+}
 const PREDICTION_MARKET_FACTORY_ABI = PredictionMarketFactoryContract;
 
 export function CreatePredictionForm() {
